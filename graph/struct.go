@@ -28,8 +28,13 @@ type Graph[T Number] struct {
 // adj is the weighted adjacency matrix
 // node vals are the node values
 func NewGraph[T Number](n int, adjList []T, nodeVal []T) (*Graph[T], error) {
+	// make sure that the adjacency matrix is square
 	if n*n != len(adjList) {
 		return nil, errors.New("incorrect number of edges")
+	}
+	// make sure that the node values are the same length as the number of nodes
+	if n != len(nodeVal) {
+		return nil, errors.New("incorrect number of node values")
 	}
 
 	nodes := make([]*Node[T], n)
@@ -61,11 +66,13 @@ func (g *Graph[T]) AddWeightedEdge(from, to int, weight T) {
 	g.Edges = append(g.Edges, &Edge[T]{from, to, weight})
 }
 
-func (g *Graph[T]) BreadthFirstSearch(start int) {
+func (g *Graph[T]) BreadthFirstSearch(start int, fn func(*Node[T])) {
 	visited := make([]bool, len(g.Nodes))
 	queue := make([]int, 0)
 	queue = append(queue, start)
+
 	visited[start] = true
+	fn(g.Nodes[start])
 	for len(queue) > 0 {
 		curr := queue[0]
 		queue = queue[1:]
@@ -73,6 +80,7 @@ func (g *Graph[T]) BreadthFirstSearch(start int) {
 			if edge.From == curr && !visited[edge.To] {
 				queue = append(queue, edge.To)
 				visited[edge.To] = true
+				fn(g.Nodes[edge.To])
 			}
 		}
 	}

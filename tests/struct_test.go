@@ -1,11 +1,14 @@
-package graph
+package tests
 
 import (
+	"reflect"
 	"testing"
+
+	"github.com/timHau/go-graph/graph"
 )
 
 func TestNewGraph(t *testing.T) {
-	g, err := NewGraph(3, []int{
+	g, err := graph.NewGraph(3, []int{
 		1, 0, 1,
 		0, 1, 0,
 		1, 0, 1,
@@ -23,8 +26,29 @@ func TestNewGraph(t *testing.T) {
 	}
 }
 
+func TestNewGraphFailSizeAdj(t *testing.T) {
+	_, err := graph.NewGraph(3, []int{
+		1, 0, 1,
+		0, 1, 0,
+	}, []int{0, 1, 2})
+	if err == nil {
+		t.Error("expected error, got nil")
+	}
+}
+
+func TestNewGraphFailSizeNodeVal(t *testing.T) {
+	_, err := graph.NewGraph(3, []int{
+		1, 0, 1,
+		0, 1, 0,
+		1, 0, 1,
+	}, []int{0})
+	if err == nil {
+		t.Error("expected error, got nil")
+	}
+}
+
 func TestAddNode(t *testing.T) {
-	g := &Graph[int]{}
+	g := &graph.Graph[int]{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -45,7 +69,7 @@ func TestAddNode(t *testing.T) {
 }
 
 func TestAddEdge(t *testing.T) {
-	g := &Graph[int]{}
+	g := &graph.Graph[int]{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -68,7 +92,7 @@ func TestAddEdge(t *testing.T) {
 }
 
 func TestAddWeightedEdge(t *testing.T) {
-	g := &Graph[float32]{}
+	g := &graph.Graph[float32]{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -91,5 +115,45 @@ func TestAddWeightedEdge(t *testing.T) {
 	edge = g.Edges[2]
 	if edge.From != 2 || edge.To != 0 || edge.Weight != 9.1 {
 		t.Errorf("expected edge from 2 -- 9.1 --> 0, got %d -- %.2f --> %d", edge.From, edge.Weight, edge.To)
+	}
+}
+
+func TestBFS(t *testing.T) {
+	g, _ := graph.NewGraph(6, []int{
+		0, 1, 1, 0, 0, 0,
+		1, 0, 0, 1, 1, 0,
+		1, 0, 0, 0, 1, 0,
+		0, 1, 0, 0, 1, 1,
+		0, 1, 1, 1, 0, 1,
+		0, 0, 0, 1, 1, 0,
+	}, []int{1, 2, 3, 4, 5, 6})
+
+	res := make([]int, 0)
+	g.BreadthFirstSearch(0, func(n *graph.Node[int]) {
+		res = append(res, n.Val)
+	})
+
+	if reflect.DeepEqual(res, []int{1, 2, 3, 4, 5, 6}) == false {
+		t.Errorf("expected [1, 2, 3, 4, 5, 6], got %v", res)
+	}
+}
+
+func TestBFS2(t *testing.T) {
+	g, _ := graph.NewGraph(6, []int{
+		0, 1, 1, 0, 0, 0,
+		1, 0, 0, 1, 1, 0,
+		1, 0, 0, 0, 1, 0,
+		0, 1, 0, 0, 1, 1,
+		0, 1, 1, 1, 0, 1,
+		0, 0, 0, 1, 1, 0,
+	}, []int{1, 2, 3, 4, 5, 6})
+
+	res := make([]int, 0)
+	g.BreadthFirstSearch(1, func(n *graph.Node[int]) {
+		res = append(res, n.Val)
+	})
+
+	if reflect.DeepEqual(res, []int{2, 1, 4, 5, 3, 6}) == false {
+		t.Errorf("expected [1, 2, 3, 4, 5, 6], got %v", res)
 	}
 }
