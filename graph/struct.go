@@ -60,3 +60,20 @@ func (g *Graph[T]) AddEdge(from, to int) {
 func (g *Graph[T]) AddWeightedEdge(from, to int, weight T) {
 	g.Edges = append(g.Edges, &Edge[T]{from, to, weight})
 }
+
+func (g *Graph[T]) BreadthFirstSearch(start int) {
+	visited := make([]bool, len(g.Nodes))
+	queue := make([]int, 0)
+	queue = append(queue, start)
+	visited[start] = true
+	for len(queue) > 0 {
+		curr := queue[0]
+		queue = queue[1:]
+		for _, edge := range g.Edges {
+			if edge.From == curr && !visited[edge.To] {
+				queue = append(queue, edge.To)
+				visited[edge.To] = true
+			}
+		}
+	}
+}
