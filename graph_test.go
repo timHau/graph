@@ -1,14 +1,12 @@
-package tests
+package main
 
 import (
 	"reflect"
 	"testing"
-
-	"github.com/timHau/go-graph/graph"
 )
 
 func TestNewGraph(t *testing.T) {
-	g, err := graph.NewGraph(3, []int{
+	g, err := NewGraph(3, []int{
 		1, 0, 1,
 		0, 1, 0,
 		1, 0, 1,
@@ -27,7 +25,7 @@ func TestNewGraph(t *testing.T) {
 }
 
 func TestNewGraphFailSizeAdj(t *testing.T) {
-	_, err := graph.NewGraph(3, []int{
+	_, err := NewGraph(3, []int{
 		1, 0, 1,
 		0, 1, 0,
 	}, []int{0, 1, 2})
@@ -37,7 +35,7 @@ func TestNewGraphFailSizeAdj(t *testing.T) {
 }
 
 func TestNewGraphFailSizeNodeVal(t *testing.T) {
-	_, err := graph.NewGraph(3, []int{
+	_, err := NewGraph(3, []int{
 		1, 0, 1,
 		0, 1, 0,
 		1, 0, 1,
@@ -48,7 +46,7 @@ func TestNewGraphFailSizeNodeVal(t *testing.T) {
 }
 
 func TestAddNode(t *testing.T) {
-	g := &graph.Graph[int, int]{}
+	g := &Graph[int, int]{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -69,7 +67,7 @@ func TestAddNode(t *testing.T) {
 }
 
 func TestAddEdge(t *testing.T) {
-	g := &graph.Graph[int, int]{}
+	g := &Graph[int, int]{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -92,7 +90,7 @@ func TestAddEdge(t *testing.T) {
 }
 
 func TestAddWeightedEdge(t *testing.T) {
-	g := &graph.Graph[int, float32]{}
+	g := &Graph[int, float32]{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -146,10 +144,10 @@ func TestBFS(t *testing.T) {
 		0, 1, 1, 1, 0, 1,
 		0, 0, 0, 1, 1, 0,
 	}
-	g, _ := graph.NewGraph(6, adjMat, []int{1, 2, 3, 4, 5, 6})
+	g, _ := NewGraph(6, adjMat, []int{1, 2, 3, 4, 5, 6})
 
 	res := make([]int, 0)
-	g.BreadthFirstSearch(0, func(n *graph.Node[int], _ int) {
+	g.BreadthFirstSearch(0, func(n *Node[int], _ int) {
 		res = append(res, n.Val)
 	})
 
@@ -186,10 +184,10 @@ func TestBFS2(t *testing.T) {
 		0, 1, 1, 1, 0, 1,
 		0, 0, 0, 1, 1, 0,
 	}
-	g, _ := graph.NewGraph(6, adjMat, []int{1, 2, 3, 4, 5, 6})
+	g, _ := NewGraph(6, adjMat, []int{1, 2, 3, 4, 5, 6})
 
 	res := make([]int, 0)
-	g.BreadthFirstSearch(1, func(n *graph.Node[int], _ int) {
+	g.BreadthFirstSearch(1, func(n *Node[int], _ int) {
 		res = append(res, n.Val)
 	})
 
@@ -224,7 +222,7 @@ func TestArbitraryNodeTypes(t *testing.T) {
 	nodeVals := []Coordinate{
 		{0, 0}, {1, 0}, {0, 1}, {1, 1},
 	}
-	g, err := graph.NewGraph(4, adjMat, nodeVals)
+	g, err := NewGraph(4, adjMat, nodeVals)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
