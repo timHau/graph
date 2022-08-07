@@ -2,6 +2,7 @@ package gograph
 
 import (
 	"errors"
+	"fmt"
 
 	"golang.org/x/exp/constraints"
 )
@@ -9,6 +10,8 @@ import (
 type Number interface {
 	constraints.Integer | constraints.Float | constraints.Complex
 }
+
+type AdjList map[int][]int
 
 type Node[T any] struct {
 	Val T // node value
@@ -60,4 +63,27 @@ func (g *Graph[T, N]) AddEdge(from, to int) {
 
 func (g *Graph[T, N]) AddWeightedEdge(from, to int, weight N) {
 	g.Edges = append(g.Edges, &Edge[N]{from, to, weight})
+}
+
+func (g *Graph[T, N]) NumNodes() int {
+	return len(g.Nodes)
+}
+
+func (g *Graph[T, N]) NumEdges() int {
+	return len(g.Edges)
+}
+
+func (g *Graph[T, N]) AsAdjList() AdjList {
+	adjList := make(map[int][]int)
+	for _, e := range g.Edges {
+		adjList[e.From] = append(adjList[e.From], e.To)
+	}
+	return adjList
+}
+
+func (g *Graph[T, N]) Show() {
+	adjList := g.AsAdjList()
+	for i, _ := range g.Nodes {
+		println(fmt.Sprintf("%d: %v", i, adjList[i]))
+	}
 }

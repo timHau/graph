@@ -24,4 +24,7 @@ func main() {
 	}
 
 	g.BFS(0, printBfs)
+	fmt.Println()
+
+	g.Show()
 }
