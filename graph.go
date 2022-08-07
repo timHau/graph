@@ -81,6 +81,10 @@ func (g *Graph[T, N]) AsAdjList() AdjList {
 	return adjList
 }
 
+func (g *Graph[T, N]) Neighbors(i int) []int {
+	return g.AsAdjList()[i]
+}
+
 func (g *Graph[T, N]) Show() {
 	adjList := g.AsAdjList()
 	for i, _ := range g.Nodes {

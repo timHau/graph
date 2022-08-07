@@ -185,3 +185,34 @@ func TestAdjList(t *testing.T) {
 		}
 	}
 }
+
+// Example Graph:
+// .┌─────┐            ┌─────┐
+// .│  1  ├────────────┤  2  │
+// .└──┬──┤            └─────┘
+// .   │  └─────┐
+// .   │        │
+// .   │        │
+// .   │        │
+// .   │        │
+// .┌──┴──┐     │      ┌─────┐
+// .│  4  │     └──────┤  3  │
+// .└─────┘            └─────┘
+func TestNeighbors(t *testing.T) {
+	adjMat := []int{
+		0, 1, 1, 1,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+	}
+	g, err := NewGraph(adjMat, []int{1, 1, 1, 1})
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	neighbors := g.Neighbors(0)
+	expected := []int{1, 2, 3}
+	if !reflect.DeepEqual(neighbors, expected) {
+		t.Errorf("expected neighbors of 0 = %v, got %v", expected, neighbors)
+	}
+}
