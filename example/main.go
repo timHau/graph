@@ -23,5 +23,5 @@ func main() {
 		panic(err)
 	}
 
-	g.BreadthFirstSearch(0, printBfs)
+	g.BFS(0, printBfs)
 }
