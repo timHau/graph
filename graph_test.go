@@ -6,7 +6,7 @@ import (
 )
 
 func TestNewGraph(t *testing.T) {
-	g, err := NewGraph(3, []int{
+	g, err := NewGraph([]int{
 		1, 0, 1,
 		0, 1, 0,
 		1, 0, 1,
@@ -25,7 +25,7 @@ func TestNewGraph(t *testing.T) {
 }
 
 func TestNewGraphFailSizeAdj(t *testing.T) {
-	_, err := NewGraph(3, []int{
+	_, err := NewGraph([]int{
 		1, 0, 1,
 		0, 1, 0,
 	}, []int{0, 1, 2})
@@ -35,7 +35,7 @@ func TestNewGraphFailSizeAdj(t *testing.T) {
 }
 
 func TestNewGraphFailSizeNodeVal(t *testing.T) {
-	_, err := NewGraph(3, []int{
+	_, err := NewGraph([]int{
 		1, 0, 1,
 		0, 1, 0,
 		1, 0, 1,
@@ -144,7 +144,7 @@ func TestBFS(t *testing.T) {
 		0, 1, 1, 1, 0, 1,
 		0, 0, 0, 1, 1, 0,
 	}
-	g, err := NewGraph(6, adjMat, []int{1, 2, 3, 4, 5, 6})
+	g, err := NewGraph(adjMat, []int{1, 2, 3, 4, 5, 6})
 	if err != nil {
 		t.Errorf("expected nil, got %v", err)
 	}
@@ -187,7 +187,7 @@ func TestBFS2(t *testing.T) {
 		0, 1, 1, 1, 0, 1,
 		0, 0, 0, 1, 1, 0,
 	}
-	g, err := NewGraph(6, adjMat, []int{1, 2, 3, 4, 5, 6})
+	g, err := NewGraph(adjMat, []int{1, 2, 3, 4, 5, 6})
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -231,7 +231,7 @@ func TestBFS3(t *testing.T) {
 		0, 1, 0, 1, 0, 0,
 	}
 	nodeVals := []int{0, 1, 2, 3, 4, 5}
-	g, err := NewGraph(6, adjMat, nodeVals)
+	g, err := NewGraph(adjMat, nodeVals)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -264,7 +264,7 @@ func TestBFSDisconnected(t *testing.T) {
 		1, 0, 0, 1,
 		0, 0, 1, 1,
 	}
-	g, err := NewGraph(4, adjMat, []int{0, 1, 2, 3})
+	g, err := NewGraph(adjMat, []int{0, 1, 2, 3})
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -304,7 +304,7 @@ func TestArbitraryNodeTypes(t *testing.T) {
 	nodeVals := []Coordinate{
 		{0, 0}, {1, 0}, {0, 1}, {1, 1},
 	}
-	g, err := NewGraph(4, adjMat, nodeVals)
+	g, err := NewGraph(adjMat, nodeVals)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -318,5 +318,44 @@ func TestArbitraryNodeTypes(t *testing.T) {
 		if node.Val != nv {
 			t.Errorf("expected node %v, got %v", nv, node.Val)
 		}
+	}
+}
+
+// Example Graph:
+// ┌─────┐              ┌─────┐
+// │  0  ├──────────────┤  3  │
+// └──┬─┬┘              └─────┘
+// .  │ │
+// .  │ │
+// .  │ └────┐
+// .  │      ├─────┐
+// .  │ ┌────┤  2  │
+// .  │ │    └──┬──┘
+// .  │ │       │
+// .  │ │       │
+// .  │ │       │
+// ┌──┴─┴┐      │       ┌─────┐
+// │  1  │      └───────┤  4  │
+// └─────┘              └─────┘
+func TestDFS(t *testing.T) {
+	adjMat := []int{
+		0, 1, 1, 1, 0,
+		1, 0, 1, 0, 0,
+		1, 1, 0, 0, 1,
+		1, 0, 0, 0, 0,
+		0, 0, 1, 0, 0,
+	}
+	nodeVals := []int{0, 1, 2, 3, 4}
+	g, err := NewGraph(adjMat, nodeVals)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	res := make([]int, 0)
+	g.DepthFirstSearch(0, func(n *Node[int], _ int) {
+		res = append(res, n.Val)
+	})
+	if reflect.DeepEqual(res, []int{0, 1, 2, 4, 3}) == false {
+		t.Errorf("expected [0, 1, 2, 4, 3], got %v", res)
 	}
 }

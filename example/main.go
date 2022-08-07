@@ -11,7 +11,7 @@ func printBfs(node *gograph.Node[int], _ int) {
 }
 
 func main() {
-	g, err := gograph.NewGraph(6, []int{
+	g, err := gograph.NewGraph([]int{
 		0, 1, 1, 0, 0, 0,
 		1, 0, 0, 1, 1, 0,
 		1, 0, 0, 0, 1, 0,

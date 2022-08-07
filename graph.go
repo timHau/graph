@@ -24,17 +24,13 @@ type Graph[T any, N Number] struct {
 	Edges []*Edge[N]
 }
 
-// n is the number of nodes in the graph
 // adj is the weighted adjacency matrix
 // node vals are the node values
-func NewGraph[T any, N Number](n int, adjList []N, nodeVal []T) (*Graph[T, N], error) {
+func NewGraph[T any, N Number](adjList []N, nodeVal []T) (*Graph[T, N], error) {
+	n := len(nodeVal)
 	// make sure that the adjacency matrix is square
 	if n*n != len(adjList) {
 		return nil, errors.New("incorrect number of edges")
-	}
-	// make sure that the node values are the same length as the number of nodes
-	if n != len(nodeVal) {
-		return nil, errors.New("incorrect number of node values")
 	}
 
 	nodes := make([]*Node[T], n)
