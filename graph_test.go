@@ -1,6 +1,7 @@
 package gograph
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -154,6 +155,32 @@ func TestArbitraryNodeTypes(t *testing.T) {
 		node := g.Nodes[i]
 		if node.Val != nv {
 			t.Errorf("expected node %v, got %v", nv, node.Val)
+		}
+	}
+}
+
+func TestAdjList(t *testing.T) {
+	adjMat := []int{
+		0, 1, 1, 1,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+	}
+	g, err := NewGraph(adjMat, []int{1, 1, 1, 1})
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	adjList := g.AsAdjList()
+	expected := make(map[int][]int)
+	expected[0] = []int{1, 2, 3}
+	expected[1] = []int{0}
+	expected[2] = []int{0}
+	expected[3] = []int{0}
+
+	for k, v := range adjList {
+		if !reflect.DeepEqual(v, expected[k]) {
+			t.Errorf("expected adjList[%d] = %v, got %v", k, expected[k], v)
 		}
 	}
 }
