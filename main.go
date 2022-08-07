@@ -6,7 +6,7 @@ import (
 	"github.com/timHau/go-graph/graph"
 )
 
-func printBfs(node *graph.Node[int]) {
+func printBfs(node *graph.Node[int], _ int) {
 	fmt.Printf("%d ", node.Val)
 }
 

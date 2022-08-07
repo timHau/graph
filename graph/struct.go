@@ -7,27 +7,27 @@ import (
 )
 
 type Number interface {
-	constraints.Integer | constraints.Float
+	constraints.Integer | constraints.Float | constraints.Complex
 }
 
-type Node[T Number] struct {
+type Node[T any] struct {
 	Val T // node value
 }
 
-type Edge[T Number] struct {
+type Edge[T any] struct {
 	From, To int // node indices
 	Weight   T   // edge weight
 }
 
-type Graph[T Number] struct {
+type Graph[T any, N Number] struct {
 	Nodes []*Node[T]
-	Edges []*Edge[T]
+	Edges []*Edge[N]
 }
 
 // n is the number of nodes in the graph
 // adj is the weighted adjacency matrix
 // node vals are the node values
-func NewGraph[T Number](n int, adjList []T, nodeVal []T) (*Graph[T], error) {
+func NewGraph[T any, N Number](n int, adjList []N, nodeVal []T) (*Graph[T, N], error) {
 	// make sure that the adjacency matrix is square
 	if n*n != len(adjList) {
 		return nil, errors.New("incorrect number of edges")
@@ -42,37 +42,58 @@ func NewGraph[T Number](n int, adjList []T, nodeVal []T) (*Graph[T], error) {
 		nodes[i] = &Node[T]{nodeVal[i]}
 	}
 
-	edges := make([]*Edge[T], 0)
+	edges := make([]*Edge[N], 0)
 	for k := 0; k < n*n; k++ {
 		i, j := k/n, k%n
 		if adjList[k] != 0 {
-			edges = append(edges, &Edge[T]{i, j, adjList[k]})
+			edges = append(edges, &Edge[N]{i, j, adjList[k]})
 		}
 	}
 
-	g := &Graph[T]{nodes, edges}
+	g := &Graph[T, N]{nodes, edges}
 	return g, nil
 }
 
-func (g *Graph[T]) AddNode(val T) {
+func (g *Graph[T, N]) AddNode(val T) {
 	g.Nodes = append(g.Nodes, &Node[T]{val})
 }
 
-func (g *Graph[T]) AddEdge(from, to int) {
+func (g *Graph[T, N]) AddEdge(from, to int) {
 	g.AddWeightedEdge(from, to, 1)
 }
 
-func (g *Graph[T]) AddWeightedEdge(from, to int, weight T) {
-	g.Edges = append(g.Edges, &Edge[T]{from, to, weight})
+func (g *Graph[T, N]) AddWeightedEdge(from, to int, weight N) {
+	g.Edges = append(g.Edges, &Edge[N]{from, to, weight})
 }
 
-func (g *Graph[T]) BreadthFirstSearch(start int, fn func(*Node[T])) {
+// Breadth First Search
+//
+// Traverse the graph while exploring all nodes at the same level
+// only explore nodes that have not been visited
+//
+// Time Complexity: O(V + E)
+// Space Complexity: O(V)
+func (g *Graph[T, N]) BreadthFirstSearch(start int, fn func(*Node[T], int)) {
 	visited := make([]bool, len(g.Nodes))
+	g.BreadthFirstStep(start, visited, fn)
+
+	// If the graph is not connected, we will start exploring the remaining graph components
+	for i := 0; i < len(g.Nodes); i++ {
+		if !visited[i] {
+			g.BreadthFirstStep(i, visited, fn)
+		}
+	}
+}
+
+// Breadth First Step
+//
+// Perfomes a breadth first search step starting at node start
+func (g *Graph[T, N]) BreadthFirstStep(start int, visited []bool, fn func(*Node[T], int)) {
 	queue := make([]int, 0)
 	queue = append(queue, start)
-
 	visited[start] = true
-	fn(g.Nodes[start])
+	fn(g.Nodes[start], start)
+
 	for len(queue) > 0 {
 		curr := queue[0]
 		queue = queue[1:]
@@ -80,8 +101,20 @@ func (g *Graph[T]) BreadthFirstSearch(start int, fn func(*Node[T])) {
 			if edge.From == curr && !visited[edge.To] {
 				queue = append(queue, edge.To)
 				visited[edge.To] = true
-				fn(g.Nodes[edge.To])
+				fn(g.Nodes[edge.To], edge.To)
 			}
 		}
 	}
+}
+
+// Depth First Search
+//
+// # Traverse the graph while following the edges in a depth-first manner
+//
+// Time Complexity: O(V + E)
+// Space Complexity: O(V)
+func (g *Graph[T, N]) DepthFirstSearch(start int, fn func(*Node[T], int)) {
+	visited := make([]bool, len(g.Nodes))
+	visited[start] = true
+
 }

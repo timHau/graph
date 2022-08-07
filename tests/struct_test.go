@@ -48,7 +48,7 @@ func TestNewGraphFailSizeNodeVal(t *testing.T) {
 }
 
 func TestAddNode(t *testing.T) {
-	g := &graph.Graph[int]{}
+	g := &graph.Graph[int, int]{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -69,7 +69,7 @@ func TestAddNode(t *testing.T) {
 }
 
 func TestAddEdge(t *testing.T) {
-	g := &graph.Graph[int]{}
+	g := &graph.Graph[int, int]{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -92,7 +92,7 @@ func TestAddEdge(t *testing.T) {
 }
 
 func TestAddWeightedEdge(t *testing.T) {
-	g := &graph.Graph[float32]{}
+	g := &graph.Graph[int, float32]{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -120,7 +120,7 @@ func TestAddWeightedEdge(t *testing.T) {
 
 // Example Graph:
 // .          ┌─────┐
-// . 	┌───────┤  1  ├───────┐
+// .  ┌───────┤  1  ├───────┐
 // .  │       └─────┘       │
 // .  │                     │
 // .  │                     │
@@ -138,17 +138,18 @@ func TestAddWeightedEdge(t *testing.T) {
 // .  └───────┤  6  ├───────┘
 // .          └─────┘
 func TestBFS(t *testing.T) {
-	g, _ := graph.NewGraph(6, []int{
+	adjMat := []int{
 		0, 1, 1, 0, 0, 0,
 		1, 0, 0, 1, 1, 0,
 		1, 0, 0, 0, 1, 0,
 		0, 1, 0, 0, 1, 1,
 		0, 1, 1, 1, 0, 1,
 		0, 0, 0, 1, 1, 0,
-	}, []int{1, 2, 3, 4, 5, 6})
+	}
+	g, _ := graph.NewGraph(6, adjMat, []int{1, 2, 3, 4, 5, 6})
 
 	res := make([]int, 0)
-	g.BreadthFirstSearch(0, func(n *graph.Node[int]) {
+	g.BreadthFirstSearch(0, func(n *graph.Node[int], _ int) {
 		res = append(res, n.Val)
 	})
 
@@ -159,7 +160,7 @@ func TestBFS(t *testing.T) {
 
 // Example Graph:
 // .          ┌─────┐
-// . 	┌───────┤  1  ├───────┐
+// .  ┌───────┤  1  ├───────┐
 // .  │       └─────┘       │
 // .  │                     │
 // .  │                     │
@@ -177,21 +178,65 @@ func TestBFS(t *testing.T) {
 // .  └───────┤  6  ├───────┘
 // .          └─────┘
 func TestBFS2(t *testing.T) {
-	g, _ := graph.NewGraph(6, []int{
+	adjMat := []int{
 		0, 1, 1, 0, 0, 0,
 		1, 0, 0, 1, 1, 0,
 		1, 0, 0, 0, 1, 0,
 		0, 1, 0, 0, 1, 1,
 		0, 1, 1, 1, 0, 1,
 		0, 0, 0, 1, 1, 0,
-	}, []int{1, 2, 3, 4, 5, 6})
+	}
+	g, _ := graph.NewGraph(6, adjMat, []int{1, 2, 3, 4, 5, 6})
 
 	res := make([]int, 0)
-	g.BreadthFirstSearch(1, func(n *graph.Node[int]) {
+	g.BreadthFirstSearch(1, func(n *graph.Node[int], _ int) {
 		res = append(res, n.Val)
 	})
 
 	if reflect.DeepEqual(res, []int{2, 1, 4, 5, 3, 6}) == false {
 		t.Errorf("expected [1, 2, 3, 4, 5, 6], got %v", res)
+	}
+}
+
+// Example Graph:
+// .┌─────┐            ┌─────┐
+// .│  1  ├────────────┤  2  │
+// .└──┬──┤            └─────┘
+// .   │  └─────┐
+// .   │        │
+// .   │        │
+// .   │        │
+// .   │        │
+// .┌──┴──┐     │      ┌─────┐
+// .│  4  │     └──────┤  3  │
+// .└─────┘            └─────┘
+func TestArbitraryNodeTypes(t *testing.T) {
+	type Coordinate struct {
+		X, Y int
+	}
+
+	adjMat := []int{
+		0, 1, 1, 1,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+	}
+	nodeVals := []Coordinate{
+		{0, 0}, {1, 0}, {0, 1}, {1, 1},
+	}
+	g, err := graph.NewGraph(4, adjMat, nodeVals)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if len(g.Nodes) != 4 {
+		t.Errorf("expected 4 nodes, got %d", len(g.Nodes))
+	}
+
+	for i, nv := range nodeVals {
+		node := g.Nodes[i]
+		if node.Val != nv {
+			t.Errorf("expected node %v, got %v", nv, node.Val)
+		}
 	}
 }
