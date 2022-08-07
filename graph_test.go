@@ -172,11 +172,12 @@ func TestAdjList(t *testing.T) {
 	}
 
 	adjList := g.AsAdjList()
-	expected := make(map[int][]int)
-	expected[0] = []int{1, 2, 3}
-	expected[1] = []int{0}
-	expected[2] = []int{0}
-	expected[3] = []int{0}
+	expected := map[int][]int{
+		0: {1, 2, 3},
+		1: {0},
+		2: {0},
+		3: {0},
+	}
 
 	for k, v := range adjList {
 		if !reflect.DeepEqual(v, expected[k]) {
