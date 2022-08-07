@@ -144,7 +144,10 @@ func TestBFS(t *testing.T) {
 		0, 1, 1, 1, 0, 1,
 		0, 0, 0, 1, 1, 0,
 	}
-	g, _ := NewGraph(6, adjMat, []int{1, 2, 3, 4, 5, 6})
+	g, err := NewGraph(6, adjMat, []int{1, 2, 3, 4, 5, 6})
+	if err != nil {
+		t.Errorf("expected nil, got %v", err)
+	}
 
 	res := make([]int, 0)
 	g.BreadthFirstSearch(0, func(n *Node[int], _ int) {
@@ -184,7 +187,10 @@ func TestBFS2(t *testing.T) {
 		0, 1, 1, 1, 0, 1,
 		0, 0, 0, 1, 1, 0,
 	}
-	g, _ := NewGraph(6, adjMat, []int{1, 2, 3, 4, 5, 6})
+	g, err := NewGraph(6, adjMat, []int{1, 2, 3, 4, 5, 6})
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
 
 	res := make([]int, 0)
 	g.BreadthFirstSearch(1, func(n *Node[int], _ int) {
@@ -193,6 +199,47 @@ func TestBFS2(t *testing.T) {
 
 	if reflect.DeepEqual(res, []int{2, 1, 4, 5, 3, 6}) == false {
 		t.Errorf("expected [1, 2, 3, 4, 5, 6], got %v", res)
+	}
+}
+
+// Example Graph:
+// .         ┌─────┐
+// .  ┌──────┤  0  ├───────┐
+// .  │      └─────┘       │
+// .  │                    │
+// .  │                    │
+// ┌──┴──┐              ┌──┴──┐
+// │  2  ├──────────────┤  1  │
+// └──┬─┬┘              └┬─┬──┘
+// .  │ │                │ │
+// .  │ │                │ │
+// .  │ └────┬─────┬─────┘ │
+// .  │      │  3  │       │
+// .  │ ┌────┴─────┴─────┐ │
+// .  │ │                │ │
+// .  │ │                │ │
+// ┌──┴─┴┐              ┌┴─┴──┐
+// │  4  │              │  5  │
+// └─────┘              └─────┘
+func TestBFS3(t *testing.T) {
+	adjMat := []int{
+		0, 1, 1, 0, 0, 0,
+		1, 0, 1, 1, 0, 1,
+		1, 1, 0, 1, 1, 0,
+		0, 1, 1, 0, 1, 1,
+		0, 0, 1, 1, 0, 0,
+		0, 1, 0, 1, 0, 0,
+	}
+	nodeVals := []int{0, 1, 2, 3, 4, 5}
+	g, _ := NewGraph(6, adjMat, nodeVals)
+
+	res := make([]int, 0)
+	g.BreadthFirstSearch(0, func(n *Node[int], _ int) {
+		res = append(res, n.Val)
+	})
+
+	if reflect.DeepEqual(res, []int{0, 1, 2, 3, 5, 4}) == false {
+		t.Errorf("expected [0, 1, 2, 3, 5, 4], got %v", res)
 	}
 }
 

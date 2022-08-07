@@ -115,6 +115,22 @@ func (g *Graph[T, N]) BreadthFirstStep(start int, visited []bool, fn func(*Node[
 // Space Complexity: O(V)
 func (g *Graph[T, N]) DepthFirstSearch(start int, fn func(*Node[T], int)) {
 	visited := make([]bool, len(g.Nodes))
-	visited[start] = true
+	g.DepthFirstStep(start, visited, fn)
 
+	// If the graph is not connected, we will start exploring the remaining graph components
+	for i := 0; i < len(g.Nodes); i++ {
+		if !visited[i] {
+			g.DepthFirstStep(i, visited, fn)
+		}
+	}
+}
+
+func (g *Graph[T, N]) DepthFirstStep(start int, visited []bool, fn func(*Node[T], int)) {
+	visited[start] = true
+	fn(g.Nodes[start], start)
+	for _, edge := range g.Edges {
+		if edge.From == start && !visited[edge.To] {
+			g.DepthFirstStep(edge.To, visited, fn)
+		}
+	}
 }
