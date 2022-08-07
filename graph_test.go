@@ -159,6 +159,39 @@ func TestArbitraryNodeTypes(t *testing.T) {
 	}
 }
 
+func TestFromAdjList(t *testing.T) {
+	AdjList := AdjList{
+		0: []AdjListTuple{{1, 1}, {2, 1}},
+		1: []AdjListTuple{{0, 3}},
+		2: []AdjListTuple{{1, 2}},
+	}
+	g, err := FromAdjList(AdjList, []int{0, 1, 2})
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if len(g.Nodes) != 3 {
+		t.Errorf("expected 3 nodes, got %d", len(g.Nodes))
+	}
+
+	if len(g.Edges) != 4 {
+		t.Errorf("expected 2 edges, got %d", len(g.Edges))
+	}
+
+	if g.Edges[0].From != 0 || g.Edges[0].To != 1 || g.Edges[0].Weight != 1 {
+		t.Errorf("expected edge from 0 -- 1, got %d -- %.2f", g.Edges[0].From, g.Edges[0].Weight)
+	}
+	if g.Edges[1].From != 0 || g.Edges[1].To != 2 || g.Edges[1].Weight != 1 {
+		t.Errorf("expected edge from 0 -- 2, got %d -- %.2f", g.Edges[1].From, g.Edges[1].Weight)
+	}
+	if g.Edges[2].From != 1 || g.Edges[2].To != 0 || g.Edges[2].Weight != 3 {
+		t.Errorf("expected edge from 1 -- 0, got %d -- %.2f", g.Edges[2].From, g.Edges[2].Weight)
+	}
+	if g.Edges[3].From != 2 || g.Edges[3].To != 1 || g.Edges[3].Weight != 2 {
+		t.Errorf("expected edge from 2 -- 1, got %d -- %.2f", g.Edges[3].From, g.Edges[3].Weight)
+	}
+}
+
 func TestAdjList(t *testing.T) {
 	adjMat := []float64{
 		0, 1, 1, 1,

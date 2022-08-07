@@ -52,7 +52,7 @@ func NewGraph[T any](adjList []float64, nodeVal []T) (*Graph[T], error) {
 	return &Graph[T]{nodes, edges}, nil
 }
 
-func (g *Graph[T]) FromMap(adjList map[int][]int, nodeVal []T) (*Graph[T], error) {
+func FromAdjList[T any](adjList AdjList, nodeVal []T) (*Graph[T], error) {
 	n := len(nodeVal)
 	if n != len(adjList) {
 		return nil, errors.New("incorrect number of nodes")
@@ -63,7 +63,7 @@ func (g *Graph[T]) FromMap(adjList map[int][]int, nodeVal []T) (*Graph[T], error
 	for k, v := range adjList {
 		nodes[k] = &Node[T]{nodeVal[k]}
 		for _, j := range v {
-			edges = append(edges, &Edge{k, j, 1})
+			edges = append(edges, &Edge{k, j.to, j.weight})
 		}
 	}
 
