@@ -6,7 +6,7 @@ import (
 )
 
 func TestNewGraph(t *testing.T) {
-	g, err := NewGraph([]int{
+	g, err := NewGraph([]float64{
 		1, 0, 1,
 		0, 1, 0,
 		1, 0, 1,
@@ -25,7 +25,7 @@ func TestNewGraph(t *testing.T) {
 }
 
 func TestNewGraphFailSizeAdj(t *testing.T) {
-	_, err := NewGraph([]int{
+	_, err := NewGraph([]float64{
 		1, 0, 1,
 		0, 1, 0,
 	}, []int{0, 1, 2})
@@ -35,7 +35,7 @@ func TestNewGraphFailSizeAdj(t *testing.T) {
 }
 
 func TestNewGraphFailSizeNodeVal(t *testing.T) {
-	_, err := NewGraph([]int{
+	_, err := NewGraph([]float64{
 		1, 0, 1,
 		0, 1, 0,
 		1, 0, 1,
@@ -46,7 +46,7 @@ func TestNewGraphFailSizeNodeVal(t *testing.T) {
 }
 
 func TestAddNode(t *testing.T) {
-	g := &Graph[int, int]{}
+	g := &Graph[int]{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -67,7 +67,7 @@ func TestAddNode(t *testing.T) {
 }
 
 func TestAddEdge(t *testing.T) {
-	g := &Graph[int, int]{}
+	g := &Graph[int]{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -90,7 +90,7 @@ func TestAddEdge(t *testing.T) {
 }
 
 func TestAddWeightedEdge(t *testing.T) {
-	g := &Graph[int, float32]{}
+	g := &Graph[int]{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -133,7 +133,7 @@ func TestArbitraryNodeTypes(t *testing.T) {
 		X, Y int
 	}
 
-	adjMat := []int{
+	adjMat := []float64{
 		0, 1, 1, 1,
 		1, 0, 0, 0,
 		1, 0, 0, 0,
@@ -160,7 +160,7 @@ func TestArbitraryNodeTypes(t *testing.T) {
 }
 
 func TestAdjList(t *testing.T) {
-	adjMat := []int{
+	adjMat := []float64{
 		0, 1, 1, 1,
 		1, 0, 0, 0,
 		1, 0, 0, 0,
@@ -172,11 +172,11 @@ func TestAdjList(t *testing.T) {
 	}
 
 	adjList := g.AsAdjList()
-	expected := map[int][]int{
-		0: {1, 2, 3},
-		1: {0},
-		2: {0},
-		3: {0},
+	expected := map[int][]AdjListTuple{
+		0: {{1, 1}, {2, 1}, {3, 1}},
+		1: {{0, 1}},
+		2: {{0, 1}},
+		3: {{0, 1}},
 	}
 
 	for k, v := range adjList {
@@ -199,7 +199,7 @@ func TestAdjList(t *testing.T) {
 // .│  4  │     └──────┤  3  │
 // .└─────┘            └─────┘
 func TestNeighbors(t *testing.T) {
-	adjMat := []int{
+	adjMat := []float64{
 		0, 1, 1, 1,
 		1, 0, 0, 0,
 		1, 0, 0, 0,
@@ -211,8 +211,30 @@ func TestNeighbors(t *testing.T) {
 	}
 
 	neighbors := g.Neighbors(0)
-	expected := []int{1, 2, 3}
+	expected := []AdjListTuple{
+		{1, 1},
+		{2, 1},
+		{3, 1},
+	}
 	if !reflect.DeepEqual(neighbors, expected) {
 		t.Errorf("expected neighbors of 0 = %v, got %v", expected, neighbors)
+	}
+}
+
+func TestEdge(t *testing.T) {
+	adjMat := []float64{
+		0, 3, 1, 1,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+	}
+	g, err := NewGraph(adjMat, []int{1, 1, 1, 1})
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	edge := g.Edge(0, 1)
+	if edge.From != 0 || edge.To != 1 || edge.Weight != 3 {
+		t.Errorf("expected edge from 0 ---> 1, got %d ---> %d", edge.From, edge.To)
 	}
 }

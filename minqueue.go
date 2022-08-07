@@ -4,7 +4,7 @@ import "container/heap"
 
 type Item[T any] struct {
 	node  *Node[T]
-	prio  int
+	prio  float64
 	index int
 }
 
@@ -39,8 +39,7 @@ func (mq *MinQueue[T]) Pop() any {
 	return item
 }
 
-func (mq *MinQueue[T]) update(item *Item[T], node *Node[T], prio int) {
-	item.node = node
+func (mq *MinQueue[T]) UpdatePrio(item *Item[T], prio float64) {
 	item.prio = prio
 	heap.Fix(mq, item.index)
 }

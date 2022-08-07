@@ -48,19 +48,19 @@ func TestPop(t *testing.T) {
 
 	item := mq.Pop().(*Item[int])
 	if item.prio != 0 {
-		t.Errorf("expected 0, got %d", item.prio)
+		t.Errorf("expected 0, got %f", item.prio)
 	}
 }
 
-func TestUpdate(t *testing.T) {
+func TestUpdatePrio(t *testing.T) {
 	mq := make(MinQueue[int], 0)
 	mq.Push(&Item[int]{prio: 0})
 	mq.Push(&Item[int]{prio: 1})
 	mq.Push(&Item[int]{prio: 5})
 	heap.Init(&mq)
 
-	mq.update(mq[0], &Node[int]{}, 2)
+	mq.UpdatePrio(mq[0], 2)
 	if mq[0].prio != 2 {
-		t.Errorf("expected 2, got %d", mq[0].prio)
+		t.Errorf("expected 2, got %f", mq[0].prio)
 	}
 }

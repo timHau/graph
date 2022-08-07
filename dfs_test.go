@@ -22,7 +22,7 @@ import (
 // │  1  │      └───────┤  4  │
 // └─────┘              └─────┘
 func TestDFS(t *testing.T) {
-	adjMat := []int{
+	adjMat := []float64{
 		0, 1, 1, 1, 0,
 		1, 0, 1, 0, 0,
 		1, 1, 0, 0, 1,
@@ -64,7 +64,7 @@ func TestDFS(t *testing.T) {
 // │  4  │              │  5  │
 // └─────┘              └─────┘
 func TestDFS2(t *testing.T) {
-	adjMat := []int{
+	adjMat := []float64{
 		0, 1, 1, 0, 0, 0,
 		1, 0, 1, 1, 0, 1,
 		1, 1, 0, 1, 1, 0,
@@ -100,7 +100,7 @@ func TestDFS2(t *testing.T) {
 // │  2  ├─────────────┤  3  ├──┘
 // └─────┘             └─────┘
 func TestDFSDisconnected(t *testing.T) {
-	adjMat := []int{
+	adjMat := []float64{
 		0, 0, 1, 0,
 		0, 1, 0, 0,
 		1, 0, 0, 1,

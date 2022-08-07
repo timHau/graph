@@ -25,7 +25,7 @@ import (
 // .  └───────┤  6  ├───────┘
 // .          └─────┘
 func TestBFS(t *testing.T) {
-	adjMat := []int{
+	adjMat := []float64{
 		0, 1, 1, 0, 0, 0,
 		1, 0, 0, 1, 1, 0,
 		1, 0, 0, 0, 1, 0,
@@ -68,7 +68,7 @@ func TestBFS(t *testing.T) {
 // .  └───────┤  6  ├───────┘
 // .          └─────┘
 func TestBFS2(t *testing.T) {
-	adjMat := []int{
+	adjMat := []float64{
 		0, 1, 1, 0, 0, 0,
 		1, 0, 0, 1, 1, 0,
 		1, 0, 0, 0, 1, 0,
@@ -111,7 +111,7 @@ func TestBFS2(t *testing.T) {
 // │  4  │              │  5  │
 // └─────┘              └─────┘
 func TestBFS3(t *testing.T) {
-	adjMat := []int{
+	adjMat := []float64{
 		0, 1, 1, 0, 0, 0,
 		1, 0, 1, 1, 0, 1,
 		1, 1, 0, 1, 1, 0,
@@ -147,7 +147,7 @@ func TestBFS3(t *testing.T) {
 // │  2  ├─────────────┤  3  ├──┘
 // └─────┘             └─────┘
 func TestBFSDisconnected(t *testing.T) {
-	adjMat := []int{
+	adjMat := []float64{
 		0, 0, 1, 0,
 		0, 1, 0, 0,
 		1, 0, 0, 1,
