@@ -1,4 +1,4 @@
-module github.com/timHau/go-graph
+module github.com/timHau/gograph
 
 go 1.18
 
