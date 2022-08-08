@@ -10,20 +10,20 @@ type Edge struct {
 	Weight   float64
 }
 
-type AdjListTuple struct {
+type WeightTuple struct {
 	to     int
 	weight float64
 }
 
 // mapping from node index to list of tuples (node, weight)
-type AdjList map[int][]AdjListTuple
+type AdjList map[int][]WeightTuple
 
 type Graph struct {
 	AdjacencyList AdjList
 }
 
 func New() *Graph {
-	return &Graph{make(map[int][]AdjListTuple)}
+	return &Graph{make(map[int][]WeightTuple)}
 }
 
 // adj is the weighted adjacency matrix
@@ -34,11 +34,11 @@ func FromAdjMat(adjMat []float64) (*Graph, error) {
 		return nil, errors.New("incorrect number of edges")
 	}
 
-	adjList := make(map[int][]AdjListTuple)
+	adjList := make(map[int][]WeightTuple)
 	for i := 0; i < n; i++ {
 		for j := 0; j < n; j++ {
 			if adjMat[i*n+j] != 0 {
-				tuple := AdjListTuple{j, adjMat[i*n+j]}
+				tuple := WeightTuple{j, adjMat[i*n+j]}
 				adjList[i] = append(adjList[i], tuple)
 			}
 		}
@@ -52,7 +52,7 @@ func FromAdjList(adjList AdjList) *Graph {
 }
 
 func (g *Graph) AddNode(val int) {
-	g.AdjacencyList[val] = []AdjListTuple{}
+	g.AdjacencyList[val] = []WeightTuple{}
 }
 
 func (g *Graph) AddEdge(from, to int) {
@@ -63,7 +63,7 @@ func (g *Graph) AddWeightedEdge(from, to int, weight float64) {
 	if g.Edge(from, to) != nil {
 		return
 	}
-	g.AdjacencyList[from] = append(g.AdjacencyList[from], AdjListTuple{to, weight})
+	g.AdjacencyList[from] = append(g.AdjacencyList[from], WeightTuple{to, weight})
 }
 
 func (g *Graph) Edge(from, to int) *Edge {
@@ -102,6 +102,6 @@ func (g *Graph) NumEdges() int {
 	return len(g.Edges())
 }
 
-func (g *Graph) Neighbors(i int) []AdjListTuple {
+func (g *Graph) Neighbors(i int) []WeightTuple {
 	return g.AdjacencyList[i]
 }

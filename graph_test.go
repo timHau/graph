@@ -101,9 +101,9 @@ func TestAddWeightedEdge(t *testing.T) {
 
 func TestFromAdjList(t *testing.T) {
 	AdjList := AdjList{
-		0: []AdjListTuple{{1, 1}, {2, 1}},
-		1: []AdjListTuple{{0, 3}},
-		2: []AdjListTuple{{1, 2}},
+		0: []WeightTuple{{1, 1}, {2, 1}},
+		1: []WeightTuple{{0, 3}},
+		2: []WeightTuple{{1, 2}},
 	}
 	g := FromAdjList(AdjList)
 
@@ -135,7 +135,7 @@ func TestFromAdjList(t *testing.T) {
 
 // Example Graph:
 // .┌─────┐            ┌─────┐
-// .│  1  ├────────────┤  2  │
+// .│  0  ├────────────┤  1  │
 // .└──┬──┤            └─────┘
 // .   │  └─────┐
 // .   │        │
@@ -143,7 +143,7 @@ func TestFromAdjList(t *testing.T) {
 // .   │        │
 // .   │        │
 // .┌──┴──┐     │      ┌─────┐
-// .│  4  │     └──────┤  3  │
+// .│  3  │     └──────┤  2  │
 // .└─────┘            └─────┘
 func TestNeighbors(t *testing.T) {
 	adjMat := []float64{
@@ -158,7 +158,7 @@ func TestNeighbors(t *testing.T) {
 	}
 
 	neighbors := g.Neighbors(0)
-	expected := []AdjListTuple{
+	expected := []WeightTuple{
 		{1, 1},
 		{2, 1},
 		{3, 1},

@@ -14,7 +14,8 @@ import (
 // 1)  a list of shortest distances to all other nodes
 // 2)  a list of predecessors for each node
 func (g *Graph) Dijkstra(start int) ([]float64, []int) {
-	numNodes := g.NumNodes()
+	nodes := g.Nodes()
+	numNodes := len(nodes)
 	// Each entry in the distance array represents the distance from the start node to the node at the index
 	distances := make([]float64, numNodes)
 	distances[start] = 0
@@ -23,22 +24,24 @@ func (g *Graph) Dijkstra(start int) ([]float64, []int) {
 	pre := make([]int, numNodes)
 	pre[start] = start
 
-	mq := make(MinQueue, numNodes)
+	mq := make(MinQueue, 0)
 	mq.Push(&Item{
 		prio:  distances[start],
+		node:  start,
 		index: start,
 	})
 
 	// initialize the lists and the priority queue
-	for i := 0; i < numNodes; i++ {
+	for i := range nodes {
 		if i != start {
 			distances[i] = math.MaxFloat64
 			pre[i] = -1
+			mq.Push(&Item{
+				prio:  distances[i],
+				node:  i,
+				index: i,
+			})
 		}
-		mq.Push(&Item{
-			prio:  distances[i],
-			index: i,
-		})
 	}
 	heap.Init(&mq)
 
@@ -46,12 +49,17 @@ func (g *Graph) Dijkstra(start int) ([]float64, []int) {
 	for mq.Len() > 0 {
 		// get the node with the smallest distance
 		item := heap.Pop(&mq).(*Item)
-		for n := range g.Neighbors(item.index) {
-			alt := distances[item.index] + float64(g.Edge(item.index, n).Weight)
-			if alt < distances[n] && distances[item.index] != math.MaxFloat64 {
-				distances[n] = alt
-				pre[n] = item.index
-				mq.UpdatePrio(item, alt)
+		u := item.node
+		for _, n := range g.Neighbors(u) {
+			v := n.to
+			vItem := mq.FindNode(v)
+			if vItem != nil {
+				alt := distances[u] + n.weight
+				if alt < distances[v] && distances[u] != math.MaxFloat64 {
+					distances[v] = alt
+					pre[v] = item.node
+					mq.UpdatePrio(vItem, alt)
+				}
 			}
 		}
 	}

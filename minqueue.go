@@ -1,8 +1,11 @@
 package gograph
 
-import "container/heap"
+import (
+	"container/heap"
+)
 
 type Item struct {
+	node  int
 	prio  float64
 	index int
 }
@@ -12,7 +15,7 @@ type MinQueue []*Item
 func (mq MinQueue) Len() int { return len(mq) }
 
 func (mq MinQueue) Less(i, j int) bool {
-	return mq[i].prio > mq[j].prio
+	return mq[i].prio < mq[j].prio
 }
 
 func (mq MinQueue) Swap(i, j int) {
@@ -36,6 +39,15 @@ func (mq *MinQueue) Pop() any {
 	item.index = -1 // for safety
 	*mq = old[0 : n-1]
 	return item
+}
+
+func (mq *MinQueue) FindNode(node int) *Item {
+	for _, item := range *mq {
+		if item.node == node {
+			return item
+		}
+	}
+	return nil
 }
 
 func (mq *MinQueue) UpdatePrio(item *Item, prio float64) {
