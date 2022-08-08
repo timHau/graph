@@ -2,8 +2,13 @@ package gograph
 
 import (
 	"errors"
-	"fmt"
+	"math"
 )
+
+type Edge struct {
+	From, To int
+	Weight   float64
+}
 
 type AdjListTuple struct {
 	to     int
@@ -13,65 +18,41 @@ type AdjListTuple struct {
 // mapping from node index to list of tuples (node, weight)
 type AdjList map[int][]AdjListTuple
 
-type Node struct {
-	ID int
-}
-
-type Edge struct {
-	From, To int     // node indices
-	Weight   float64 // edge weight
-}
-
 type Graph struct {
-	Nodes []*Node
-	Edges []*Edge
+	AdjacencyList AdjList
+}
+
+func New() *Graph {
+	return &Graph{make(map[int][]AdjListTuple)}
 }
 
 // adj is the weighted adjacency matrix
-// node vals are the node values
-func NewGraph(adjList []float64, nodeVal []int) (*Graph, error) {
-	n := len(nodeVal)
+func FromAdjMat(adjMat []float64) (*Graph, error) {
+	n := int(math.Sqrt(float64(len(adjMat))))
 	// make sure that the adjacency matrix is square
-	if n*n != len(adjList) {
+	if n*n != len(adjMat) {
 		return nil, errors.New("incorrect number of edges")
 	}
 
-	nodes := make([]*Node, n)
+	adjList := make(map[int][]AdjListTuple)
 	for i := 0; i < n; i++ {
-		nodes[i] = &Node{nodeVal[i]}
-	}
-
-	edges := make([]*Edge, 0)
-	for k := 0; k < n*n; k++ {
-		i, j := k/n, k%n
-		if adjList[k] != 0 {
-			edges = append(edges, &Edge{i, j, adjList[k]})
+		for j := 0; j < n; j++ {
+			if adjMat[i*n+j] != 0 {
+				tuple := AdjListTuple{j, adjMat[i*n+j]}
+				adjList[i] = append(adjList[i], tuple)
+			}
 		}
 	}
 
-	return &Graph{nodes, edges}, nil
+	return &Graph{adjList}, nil
 }
 
-func FromAdjList(adjList AdjList, nodeVal []int) (*Graph, error) {
-	n := len(nodeVal)
-	if n != len(adjList) {
-		return nil, errors.New("incorrect number of nodes")
-	}
-
-	nodes := make([]*Node, n)
-	edges := make([]*Edge, 0)
-	for k, v := range adjList {
-		nodes[k] = &Node{nodeVal[k]}
-		for _, j := range v {
-			edges = append(edges, &Edge{k, j.to, j.weight})
-		}
-	}
-
-	return &Graph{nodes, edges}, nil
+func FromAdjList(adjList AdjList) *Graph {
+	return &Graph{adjList}
 }
 
 func (g *Graph) AddNode(val int) {
-	g.Nodes = append(g.Nodes, &Node{val})
+	g.AdjacencyList[val] = []AdjListTuple{}
 }
 
 func (g *Graph) AddEdge(from, to int) {
@@ -79,41 +60,48 @@ func (g *Graph) AddEdge(from, to int) {
 }
 
 func (g *Graph) AddWeightedEdge(from, to int, weight float64) {
-	g.Edges = append(g.Edges, &Edge{from, to, weight})
-}
-
-func (g *Graph) NumNodes() int {
-	return len(g.Nodes)
-}
-
-func (g *Graph) NumEdges() int {
-	return len(g.Edges)
-}
-
-func (g *Graph) AsAdjList() AdjList {
-	adjList := make(map[int][]AdjListTuple)
-	for _, e := range g.Edges {
-		adjList[e.From] = append(adjList[e.From], AdjListTuple{e.To, e.Weight})
+	if g.Edge(from, to) != nil {
+		return
 	}
-	return adjList
-}
-
-func (g *Graph) Neighbors(i int) []AdjListTuple {
-	return g.AsAdjList()[i]
+	g.AdjacencyList[from] = append(g.AdjacencyList[from], AdjListTuple{to, weight})
 }
 
 func (g *Graph) Edge(from, to int) *Edge {
-	for _, e := range g.Edges {
-		if e.From == from && e.To == to {
-			return e
+	adj := g.AdjacencyList[from]
+	for i, e := range adj {
+		if e.to == to {
+			return &Edge{from, to, adj[i].weight}
 		}
 	}
 	return nil
 }
 
-func (g *Graph) Show() {
-	adjList := g.AsAdjList()
-	for i, _ := range g.Nodes {
-		println(fmt.Sprintf("%d: %v", i, adjList[i]))
+func (g *Graph) Edges() []Edge {
+	edges := make([]Edge, 0)
+	for i, adj := range g.AdjacencyList {
+		for _, e := range adj {
+			edges = append(edges, Edge{i, e.to, e.weight})
+		}
 	}
+	return edges
+}
+
+func (g *Graph) Nodes() []int {
+	nodes := []int{}
+	for node := range g.AdjacencyList {
+		nodes = append(nodes, node)
+	}
+	return nodes
+}
+
+func (g *Graph) NumNodes() int {
+	return len(g.AdjacencyList)
+}
+
+func (g *Graph) NumEdges() int {
+	return len(g.Edges())
+}
+
+func (g *Graph) Neighbors(i int) []AdjListTuple {
+	return g.AdjacencyList[i]
 }

@@ -14,29 +14,28 @@ import (
 // 1)  a list of shortest distances to all other nodes
 // 2)  a list of predecessors for each node
 func (g *Graph) Dijkstra(start int) ([]float64, []int) {
+	numNodes := g.NumNodes()
 	// Each entry in the distance array represents the distance from the start node to the node at the index
-	distances := make([]float64, len(g.Nodes))
+	distances := make([]float64, numNodes)
 	distances[start] = 0
 
 	// List of predecessors for each node
-	pre := make([]int, len(g.Nodes))
+	pre := make([]int, numNodes)
 	pre[start] = start
 
-	mq := make(MinQueue, len(g.Nodes))
+	mq := make(MinQueue, numNodes)
 	mq.Push(&Item{
-		node:  g.Nodes[start],
 		prio:  distances[start],
 		index: start,
 	})
 
 	// initialize the lists and the priority queue
-	for i := 0; i < len(g.Nodes); i++ {
+	for i := 0; i < numNodes; i++ {
 		if i != start {
 			distances[i] = math.MaxFloat64
 			pre[i] = -1
 		}
 		mq.Push(&Item{
-			node:  g.Nodes[i],
 			prio:  distances[i],
 			index: i,
 		})

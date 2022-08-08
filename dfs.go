@@ -6,22 +6,23 @@ package gograph
 //
 // Time Complexity: O(V + E)
 // Space Complexity: O(V)
-func (g *Graph) DFS(start int, fn func(*Node, int)) {
-	visited := make([]bool, len(g.Nodes))
+func (g *Graph) DFS(start int, fn func(int)) {
+	numNodes := g.NumNodes()
+	visited := make([]bool, numNodes)
 	g.DFSstep(start, visited, fn)
 
 	// If the graph is not connected, we will start exploring the remaining graph components
-	for i := 0; i < len(g.Nodes); i++ {
+	for i := 0; i < numNodes; i++ {
 		if !visited[i] {
 			g.DFSstep(i, visited, fn)
 		}
 	}
 }
 
-func (g *Graph) DFSstep(start int, visited []bool, fn func(*Node, int)) {
+func (g *Graph) DFSstep(start int, visited []bool, fn func(int)) {
 	visited[start] = true
-	fn(g.Nodes[start], start)
-	for _, edge := range g.Edges {
+	fn(start)
+	for _, edge := range g.Edges() {
 		if edge.From == start && !visited[edge.To] {
 			g.DFSstep(edge.To, visited, fn)
 		}

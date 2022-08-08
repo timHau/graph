@@ -3,7 +3,6 @@ package gograph
 import "container/heap"
 
 type Item struct {
-	node  *Node
 	prio  float64
 	index int
 }

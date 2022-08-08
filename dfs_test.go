@@ -29,15 +29,14 @@ func TestDFS(t *testing.T) {
 		1, 0, 0, 0, 0,
 		0, 0, 1, 0, 0,
 	}
-	nodeVals := []int{0, 1, 2, 3, 4}
-	g, err := NewGraph(adjMat, nodeVals)
+	g, err := FromAdjMat(adjMat)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
 
 	res := make([]int, 0)
-	g.DFS(0, func(n *Node, _ int) {
-		res = append(res, n.ID)
+	g.DFS(0, func(n int) {
+		res = append(res, n)
 	})
 	if !reflect.DeepEqual(res, []int{0, 1, 2, 4, 3}) {
 		t.Errorf("expected [0, 1, 2, 4, 3], got %v", res)
@@ -72,15 +71,14 @@ func TestDFS2(t *testing.T) {
 		0, 0, 1, 1, 0, 0,
 		0, 1, 0, 1, 0, 0,
 	}
-	nodeVals := []int{0, 1, 2, 3, 4, 5}
-	g, err := NewGraph(adjMat, nodeVals)
+	g, err := FromAdjMat(adjMat)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
 
 	res := make([]int, 0)
-	g.DFS(0, func(n *Node, _ int) {
-		res = append(res, n.ID)
+	g.DFS(0, func(n int) {
+		res = append(res, n)
 	})
 
 	if !reflect.DeepEqual(res, []int{0, 1, 2, 3, 4, 5}) {
@@ -106,14 +104,14 @@ func TestDFSDisconnected(t *testing.T) {
 		1, 0, 0, 1,
 		0, 0, 1, 1,
 	}
-	g, err := NewGraph(adjMat, []int{0, 1, 2, 3})
+	g, err := FromAdjMat(adjMat)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
 
 	res := make([]int, 0)
-	g.DFS(0, func(n *Node, _ int) {
-		res = append(res, n.ID)
+	g.DFS(0, func(n int) {
+		res = append(res, n)
 	})
 	if !reflect.DeepEqual(res, []int{0, 2, 3, 1}) {
 		t.Errorf("expected [0, 2, 3, 1], got %v", res)
