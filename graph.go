@@ -13,8 +13,8 @@ type AdjListTuple struct {
 // mapping from node index to list of tuples (node, weight)
 type AdjList map[int][]AdjListTuple
 
-type Node[T any] struct {
-	Val T // node value
+type Node struct {
+	ID int
 }
 
 type Edge struct {
@@ -22,23 +22,23 @@ type Edge struct {
 	Weight   float64 // edge weight
 }
 
-type Graph[T any] struct {
-	Nodes []*Node[T]
+type Graph struct {
+	Nodes []*Node
 	Edges []*Edge
 }
 
 // adj is the weighted adjacency matrix
 // node vals are the node values
-func NewGraph[T any](adjList []float64, nodeVal []T) (*Graph[T], error) {
+func NewGraph(adjList []float64, nodeVal []int) (*Graph, error) {
 	n := len(nodeVal)
 	// make sure that the adjacency matrix is square
 	if n*n != len(adjList) {
 		return nil, errors.New("incorrect number of edges")
 	}
 
-	nodes := make([]*Node[T], n)
+	nodes := make([]*Node, n)
 	for i := 0; i < n; i++ {
-		nodes[i] = &Node[T]{nodeVal[i]}
+		nodes[i] = &Node{nodeVal[i]}
 	}
 
 	edges := make([]*Edge, 0)
@@ -49,48 +49,48 @@ func NewGraph[T any](adjList []float64, nodeVal []T) (*Graph[T], error) {
 		}
 	}
 
-	return &Graph[T]{nodes, edges}, nil
+	return &Graph{nodes, edges}, nil
 }
 
-func FromAdjList[T any](adjList AdjList, nodeVal []T) (*Graph[T], error) {
+func FromAdjList(adjList AdjList, nodeVal []int) (*Graph, error) {
 	n := len(nodeVal)
 	if n != len(adjList) {
 		return nil, errors.New("incorrect number of nodes")
 	}
 
-	nodes := make([]*Node[T], n)
+	nodes := make([]*Node, n)
 	edges := make([]*Edge, 0)
 	for k, v := range adjList {
-		nodes[k] = &Node[T]{nodeVal[k]}
+		nodes[k] = &Node{nodeVal[k]}
 		for _, j := range v {
 			edges = append(edges, &Edge{k, j.to, j.weight})
 		}
 	}
 
-	return &Graph[T]{nodes, edges}, nil
+	return &Graph{nodes, edges}, nil
 }
 
-func (g *Graph[T]) AddNode(val T) {
-	g.Nodes = append(g.Nodes, &Node[T]{val})
+func (g *Graph) AddNode(val int) {
+	g.Nodes = append(g.Nodes, &Node{val})
 }
 
-func (g *Graph[T]) AddEdge(from, to int) {
+func (g *Graph) AddEdge(from, to int) {
 	g.AddWeightedEdge(from, to, 1)
 }
 
-func (g *Graph[T]) AddWeightedEdge(from, to int, weight float64) {
+func (g *Graph) AddWeightedEdge(from, to int, weight float64) {
 	g.Edges = append(g.Edges, &Edge{from, to, weight})
 }
 
-func (g *Graph[T]) NumNodes() int {
+func (g *Graph) NumNodes() int {
 	return len(g.Nodes)
 }
 
-func (g *Graph[T]) NumEdges() int {
+func (g *Graph) NumEdges() int {
 	return len(g.Edges)
 }
 
-func (g *Graph[T]) AsAdjList() AdjList {
+func (g *Graph) AsAdjList() AdjList {
 	adjList := make(map[int][]AdjListTuple)
 	for _, e := range g.Edges {
 		adjList[e.From] = append(adjList[e.From], AdjListTuple{e.To, e.Weight})
@@ -98,11 +98,11 @@ func (g *Graph[T]) AsAdjList() AdjList {
 	return adjList
 }
 
-func (g *Graph[T]) Neighbors(i int) []AdjListTuple {
+func (g *Graph) Neighbors(i int) []AdjListTuple {
 	return g.AsAdjList()[i]
 }
 
-func (g *Graph[T]) Edge(from, to int) *Edge {
+func (g *Graph) Edge(from, to int) *Edge {
 	for _, e := range g.Edges {
 		if e.From == from && e.To == to {
 			return e
@@ -111,7 +111,7 @@ func (g *Graph[T]) Edge(from, to int) *Edge {
 	return nil
 }
 
-func (g *Graph[T]) Show() {
+func (g *Graph) Show() {
 	adjList := g.AsAdjList()
 	for i, _ := range g.Nodes {
 		println(fmt.Sprintf("%d: %v", i, adjList[i]))

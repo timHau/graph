@@ -39,8 +39,8 @@ func TestBFS(t *testing.T) {
 	}
 
 	res := make([]int, 0)
-	g.BFS(0, func(n *Node[int], _ int) {
-		res = append(res, n.Val)
+	g.BFS(0, func(n *Node, _ int) {
+		res = append(res, n.ID)
 	})
 
 	if !reflect.DeepEqual(res, []int{1, 2, 3, 4, 5, 6}) {
@@ -82,8 +82,8 @@ func TestBFS2(t *testing.T) {
 	}
 
 	res := make([]int, 0)
-	g.BFS(1, func(n *Node[int], _ int) {
-		res = append(res, n.Val)
+	g.BFS(1, func(n *Node, _ int) {
+		res = append(res, n.ID)
 	})
 
 	if !reflect.DeepEqual(res, []int{2, 1, 4, 5, 3, 6}) {
@@ -126,8 +126,8 @@ func TestBFS3(t *testing.T) {
 	}
 
 	res := make([]int, 0)
-	g.BFS(0, func(n *Node[int], _ int) {
-		res = append(res, n.Val)
+	g.BFS(0, func(n *Node, _ int) {
+		res = append(res, n.ID)
 	})
 
 	if !reflect.DeepEqual(res, []int{0, 1, 2, 3, 5, 4}) {
@@ -159,8 +159,8 @@ func TestBFSDisconnected(t *testing.T) {
 	}
 
 	res := make([]int, 0)
-	g.BFS(0, func(n *Node[int], _ int) {
-		res = append(res, n.Val)
+	g.BFS(0, func(n *Node, _ int) {
+		res = append(res, n.ID)
 	})
 	if !reflect.DeepEqual(res, []int{0, 2, 3, 1}) {
 		t.Errorf("expected [0, 2, 3, 1], got %v", res)

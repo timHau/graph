@@ -13,7 +13,7 @@ import (
 // returns:
 // 1)  a list of shortest distances to all other nodes
 // 2)  a list of predecessors for each node
-func (g *Graph[T]) Dijkstra(start int) ([]float64, []int) {
+func (g *Graph) Dijkstra(start int) ([]float64, []int) {
 	// Each entry in the distance array represents the distance from the start node to the node at the index
 	distances := make([]float64, len(g.Nodes))
 	distances[start] = 0
@@ -22,8 +22,8 @@ func (g *Graph[T]) Dijkstra(start int) ([]float64, []int) {
 	pre := make([]int, len(g.Nodes))
 	pre[start] = start
 
-	mq := make(MinQueue[T], len(g.Nodes))
-	mq.Push(&Item[T]{
+	mq := make(MinQueue, len(g.Nodes))
+	mq.Push(&Item{
 		node:  g.Nodes[start],
 		prio:  distances[start],
 		index: start,
@@ -35,7 +35,7 @@ func (g *Graph[T]) Dijkstra(start int) ([]float64, []int) {
 			distances[i] = math.MaxFloat64
 			pre[i] = -1
 		}
-		mq.Push(&Item[T]{
+		mq.Push(&Item{
 			node:  g.Nodes[i],
 			prio:  distances[i],
 			index: i,
@@ -46,7 +46,7 @@ func (g *Graph[T]) Dijkstra(start int) ([]float64, []int) {
 	// while the priority queue is not empty
 	for mq.Len() > 0 {
 		// get the node with the smallest distance
-		item := heap.Pop(&mq).(*Item[T])
+		item := heap.Pop(&mq).(*Item)
 		for n := range g.Neighbors(item.index) {
 			alt := distances[item.index] + float64(g.Edge(item.index, n).Weight)
 			if alt < distances[n] && distances[item.index] != math.MaxFloat64 {

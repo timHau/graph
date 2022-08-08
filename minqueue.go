@@ -2,34 +2,34 @@ package gograph
 
 import "container/heap"
 
-type Item[T any] struct {
-	node  *Node[T]
+type Item struct {
+	node  *Node
 	prio  float64
 	index int
 }
 
-type MinQueue[T any] []*Item[T]
+type MinQueue []*Item
 
-func (mq MinQueue[T]) Len() int { return len(mq) }
+func (mq MinQueue) Len() int { return len(mq) }
 
-func (mq MinQueue[T]) Less(i, j int) bool {
+func (mq MinQueue) Less(i, j int) bool {
 	return mq[i].prio > mq[j].prio
 }
 
-func (mq MinQueue[T]) Swap(i, j int) {
+func (mq MinQueue) Swap(i, j int) {
 	mq[i], mq[j] = mq[j], mq[i]
 	mq[i].index = i
 	mq[j].index = j
 }
 
-func (mq *MinQueue[T]) Push(x any) {
+func (mq *MinQueue) Push(x any) {
 	n := len(*mq)
-	item := x.(*Item[T])
+	item := x.(*Item)
 	item.index = n
 	*mq = append(*mq, item)
 }
 
-func (mq *MinQueue[T]) Pop() any {
+func (mq *MinQueue) Pop() any {
 	old := *mq
 	n := len(old)
 	item := old[n-1]
@@ -39,7 +39,7 @@ func (mq *MinQueue[T]) Pop() any {
 	return item
 }
 
-func (mq *MinQueue[T]) UpdatePrio(item *Item[T], prio float64) {
+func (mq *MinQueue) UpdatePrio(item *Item, prio float64) {
 	item.prio = prio
 	heap.Fix(mq, item.index)
 }

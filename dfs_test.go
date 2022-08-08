@@ -36,8 +36,8 @@ func TestDFS(t *testing.T) {
 	}
 
 	res := make([]int, 0)
-	g.DFS(0, func(n *Node[int], _ int) {
-		res = append(res, n.Val)
+	g.DFS(0, func(n *Node, _ int) {
+		res = append(res, n.ID)
 	})
 	if !reflect.DeepEqual(res, []int{0, 1, 2, 4, 3}) {
 		t.Errorf("expected [0, 1, 2, 4, 3], got %v", res)
@@ -79,8 +79,8 @@ func TestDFS2(t *testing.T) {
 	}
 
 	res := make([]int, 0)
-	g.DFS(0, func(n *Node[int], _ int) {
-		res = append(res, n.Val)
+	g.DFS(0, func(n *Node, _ int) {
+		res = append(res, n.ID)
 	})
 
 	if !reflect.DeepEqual(res, []int{0, 1, 2, 3, 4, 5}) {
@@ -112,8 +112,8 @@ func TestDFSDisconnected(t *testing.T) {
 	}
 
 	res := make([]int, 0)
-	g.DFS(0, func(n *Node[int], _ int) {
-		res = append(res, n.Val)
+	g.DFS(0, func(n *Node, _ int) {
+		res = append(res, n.ID)
 	})
 	if !reflect.DeepEqual(res, []int{0, 2, 3, 1}) {
 		t.Errorf("expected [0, 2, 3, 1], got %v", res)

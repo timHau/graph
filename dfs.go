@@ -6,7 +6,7 @@ package gograph
 //
 // Time Complexity: O(V + E)
 // Space Complexity: O(V)
-func (g *Graph[T]) DFS(start int, fn func(*Node[T], int)) {
+func (g *Graph) DFS(start int, fn func(*Node, int)) {
 	visited := make([]bool, len(g.Nodes))
 	g.DFSstep(start, visited, fn)
 
@@ -18,7 +18,7 @@ func (g *Graph[T]) DFS(start int, fn func(*Node[T], int)) {
 	}
 }
 
-func (g *Graph[T]) DFSstep(start int, visited []bool, fn func(*Node[T], int)) {
+func (g *Graph) DFSstep(start int, visited []bool, fn func(*Node, int)) {
 	visited[start] = true
 	fn(g.Nodes[start], start)
 	for _, edge := range g.Edges {

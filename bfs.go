@@ -7,7 +7,7 @@ package gograph
 //
 // Time Complexity: O(V + E)
 // Space Complexity: O(V)
-func (g *Graph[T]) BFS(start int, fn func(*Node[T], int)) {
+func (g *Graph) BFS(start int, fn func(*Node, int)) {
 	visited := make([]bool, len(g.Nodes))
 	g.BFSstep(start, visited, fn)
 
@@ -22,7 +22,7 @@ func (g *Graph[T]) BFS(start int, fn func(*Node[T], int)) {
 // Breadth First Step
 //
 // Perfomes a breadth first search step starting at node start
-func (g *Graph[T]) BFSstep(start int, visited []bool, fn func(*Node[T], int)) {
+func (g *Graph) BFSstep(start int, visited []bool, fn func(*Node, int)) {
 	queue := make([]int, 0)
 	queue = append(queue, start)
 	visited[start] = true

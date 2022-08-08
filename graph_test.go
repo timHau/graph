@@ -46,7 +46,7 @@ func TestNewGraphFailSizeNodeVal(t *testing.T) {
 }
 
 func TestAddNode(t *testing.T) {
-	g := &Graph[int]{}
+	g := &Graph{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -55,19 +55,19 @@ func TestAddNode(t *testing.T) {
 		t.Errorf("expected 3 nodes, got %d", len(g.Nodes))
 	}
 
-	if g.Nodes[0].Val != 0 {
-		t.Errorf("expected 0, got %d", g.Nodes[0].Val)
+	if g.Nodes[0].ID != 0 {
+		t.Errorf("expected 0, got %d", g.Nodes[0].ID)
 	}
-	if g.Nodes[1].Val != 1 {
-		t.Errorf("expected 1, got %d", g.Nodes[1].Val)
+	if g.Nodes[1].ID != 1 {
+		t.Errorf("expected 1, got %d", g.Nodes[1].ID)
 	}
-	if g.Nodes[2].Val != 2 {
-		t.Errorf("expected 2, got %d", g.Nodes[2].Val)
+	if g.Nodes[2].ID != 2 {
+		t.Errorf("expected 2, got %d", g.Nodes[2].ID)
 	}
 }
 
 func TestAddEdge(t *testing.T) {
-	g := &Graph[int]{}
+	g := &Graph{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -90,7 +90,7 @@ func TestAddEdge(t *testing.T) {
 }
 
 func TestAddWeightedEdge(t *testing.T) {
-	g := &Graph[int]{}
+	g := &Graph{}
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -113,49 +113,6 @@ func TestAddWeightedEdge(t *testing.T) {
 	edge = g.Edges[2]
 	if edge.From != 2 || edge.To != 0 || edge.Weight != 9.1 {
 		t.Errorf("expected edge from 2 -- 9.1 --> 0, got %d -- %.2f --> %d", edge.From, edge.Weight, edge.To)
-	}
-}
-
-// Example Graph:
-// .┌─────┐            ┌─────┐
-// .│  1  ├────────────┤  2  │
-// .└──┬──┤            └─────┘
-// .   │  └─────┐
-// .   │        │
-// .   │        │
-// .   │        │
-// .   │        │
-// .┌──┴──┐     │      ┌─────┐
-// .│  4  │     └──────┤  3  │
-// .└─────┘            └─────┘
-func TestArbitraryNodeTypes(t *testing.T) {
-	type Coordinate struct {
-		X, Y int
-	}
-
-	adjMat := []float64{
-		0, 1, 1, 1,
-		1, 0, 0, 0,
-		1, 0, 0, 0,
-		1, 0, 0, 0,
-	}
-	nodeVals := []Coordinate{
-		{0, 0}, {1, 0}, {0, 1}, {1, 1},
-	}
-	g, err := NewGraph(adjMat, nodeVals)
-	if err != nil {
-		t.Errorf("expected no error, got %v", err)
-	}
-
-	if len(g.Nodes) != 4 {
-		t.Errorf("expected 4 nodes, got %d", len(g.Nodes))
-	}
-
-	for i, nv := range nodeVals {
-		node := g.Nodes[i]
-		if node.Val != nv {
-			t.Errorf("expected node %v, got %v", nv, node.Val)
-		}
 	}
 }
 
