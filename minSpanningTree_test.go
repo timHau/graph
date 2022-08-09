@@ -1,6 +1,9 @@
 package gograph
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestPrim(t *testing.T) {
 	adjMat := []float64{
@@ -20,5 +23,19 @@ func TestPrim(t *testing.T) {
 	}
 
 	mst := g.Prim()
-	t.Errorf("%v", mst)
+	expected := AdjList{
+		0: []WeightTuple{{1, 4}},
+		1: []WeightTuple{{2, 8}},
+		2: []WeightTuple{{3, 7}, {5, 4}, {8, 2}},
+		3: []WeightTuple{{4, 9}},
+		4: []WeightTuple{},
+		5: []WeightTuple{{6, 2}},
+		6: []WeightTuple{{7, 1}},
+		7: []WeightTuple{},
+		8: []WeightTuple{},
+	}
+
+	if !reflect.DeepEqual(mst.AdjacencyList, expected) {
+		t.Errorf("expected %v, got %v", expected, mst.AdjacencyList)
+	}
 }
