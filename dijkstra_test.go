@@ -49,7 +49,10 @@ func TestDijkstra(t *testing.T) {
 		5: []WeightTuple{},
 	}
 	g := FromAdjList(adjList)
-	g = g.Dijkstra(0)
+	g, err := g.Dijkstra(0)
+	if err != nil {
+		t.Error(err)
+	}
 
 	expected := AdjList{
 		0: []WeightTuple{{1, 7}},
@@ -59,5 +62,21 @@ func TestDijkstra(t *testing.T) {
 	}
 	if !reflect.DeepEqual(g.AdjacencyList, expected) {
 		t.Errorf("expected %v, got %v", expected, g.AdjacencyList)
+	}
+}
+
+func TestDijkstraNegative(t *testing.T) {
+	adjList := AdjList{
+		0: []WeightTuple{{1, 7}, {2, 12}},
+		1: []WeightTuple{{2, 2}, {3, 9}},
+		2: []WeightTuple{{4, 10}},
+		3: []WeightTuple{{5, -1}},
+		4: []WeightTuple{{3, 4}, {5, 5}},
+		5: []WeightTuple{},
+	}
+	g := FromAdjList(adjList)
+	_, err := g.Dijkstra(0)
+	if err == nil {
+		t.Errorf("Dijkstra should have work with negative weights")
 	}
 }

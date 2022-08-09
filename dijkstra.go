@@ -2,6 +2,7 @@ package gograph
 
 import (
 	"container/heap"
+	"errors"
 	"math"
 )
 
@@ -13,7 +14,11 @@ import (
 // returns:
 // 1)  a list of shortest distances to all other nodes
 // 2)  a Graph containing the shortest paths to all other nodes as edge weights
-func (g *Graph) Dijkstra(start int) *Graph {
+func (g *Graph) Dijkstra(start int) (*Graph, error) {
+	if g.HasNegativeEdges() {
+		return nil, errors.New("Dijkstras Algorithm does not support negative edge weights")
+	}
+
 	nodes := g.Nodes()
 	numNodes := len(nodes)
 	// Each entry in the distance array represents the distance from the start node to the node at the index
@@ -71,5 +76,5 @@ func (g *Graph) Dijkstra(start int) *Graph {
 		}
 	}
 
-	return res
+	return res, nil
 }

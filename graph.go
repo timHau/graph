@@ -110,3 +110,14 @@ func (g *Graph) AdjEdges(i int) []Edge {
 	}
 	return edges
 }
+
+func (g *Graph) HasNegativeEdges() bool {
+	for _, adj := range g.AdjacencyList {
+		for _, e := range adj {
+			if e.weight < 0 {
+				return true
+			}
+		}
+	}
+	return false
+}

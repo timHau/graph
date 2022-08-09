@@ -247,3 +247,37 @@ func TestFromZeroAdjMat(t *testing.T) {
 		t.Errorf("expected 4 nodes, got %d", g.NumNodes())
 	}
 }
+
+func TestHasNoNegativeEdges(t *testing.T) {
+	adjMat := []float64{
+		0, 1, 1, 1,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+	}
+	g, err := FromAdjMat(adjMat)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if g.HasNegativeEdges() {
+		t.Errorf("expected no negative edges, got %v", g.HasNegativeEdges())
+	}
+}
+
+func TestHasNegativeEdges(t *testing.T) {
+	adjMat := []float64{
+		0, 1, 1, -1,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+	}
+	g, err := FromAdjMat(adjMat)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if !g.HasNegativeEdges() {
+		t.Errorf("expected negative edges, got %v", g.HasNegativeEdges())
+	}
+}
