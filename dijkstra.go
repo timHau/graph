@@ -50,11 +50,11 @@ func (g *Graph) Dijkstra(start int) ([]float64, []int) {
 		// get the node with the smallest distance
 		item := heap.Pop(&mq).(*Item)
 		u := item.node
-		for _, n := range g.Neighbors(u) {
-			v := n.to
+		for _, e := range g.AdjEdges(u) {
+			v := e.To
 			vItem := mq.FindNode(v)
 			if vItem != nil {
-				alt := distances[u] + n.weight
+				alt := distances[u] + e.Weight
 				if alt < distances[v] && distances[u] != math.MaxFloat64 {
 					distances[v] = alt
 					pre[v] = item.node

@@ -34,8 +34,9 @@ func FromAdjMat(adjMat []float64) (*Graph, error) {
 		return nil, errors.New("incorrect number of edges")
 	}
 
-	adjList := make(map[int][]WeightTuple)
+	adjList := make(map[int][]WeightTuple, n)
 	for i := 0; i < n; i++ {
+		adjList[i] = []WeightTuple{}
 		for j := 0; j < n; j++ {
 			if adjMat[i*n+j] != 0 {
 				tuple := WeightTuple{j, adjMat[i*n+j]}
@@ -102,6 +103,10 @@ func (g *Graph) NumEdges() int {
 	return len(g.Edges())
 }
 
-func (g *Graph) Neighbors(i int) []WeightTuple {
-	return g.AdjacencyList[i]
+func (g *Graph) AdjEdges(i int) []Edge {
+	edges := make([]Edge, 0)
+	for _, e := range g.AdjacencyList[i] {
+		edges = append(edges, Edge{i, e.to, e.weight})
+	}
+	return edges
 }

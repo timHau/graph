@@ -157,14 +157,59 @@ func TestNeighbors(t *testing.T) {
 		t.Errorf("expected no error, got %v", err)
 	}
 
-	neighbors := g.Neighbors(0)
-	expected := []WeightTuple{
-		{1, 1},
-		{2, 1},
-		{3, 1},
+	neighbors := g.AdjEdges(0)
+	expected := []Edge{
+		{0, 1, 1},
+		{0, 2, 1},
+		{0, 3, 1},
 	}
 	if !reflect.DeepEqual(neighbors, expected) {
 		t.Errorf("expected neighbors of 0 = %v, got %v", expected, neighbors)
+	}
+}
+
+// Example Graph:
+// .          ┌─────┐
+// .  ┌──────►│  1  ├─────────┐
+// .  │       └─────┘         │
+// .  │                       │
+// .  │                       │
+// .  │                       │
+// .  │                       │
+// .  │                       ▼
+// ┌──┴──┐                 ┌─────┐
+// │  0  │                 │  2  │
+// └─────┘                 └─────┘
+func TestNeighbors2(t *testing.T) {
+	adjMat := []float64{
+		0, 1, 0,
+		0, 0, 1,
+		0, 0, 0,
+	}
+	g, err := FromAdjMat(adjMat)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	e0 := g.AdjEdges(0)
+	if len(e0) != 1 {
+		t.Errorf("expected 1 neighbor for node 0, got %d", len(e0))
+	}
+	if e0[0].From != 0 || e0[0].To != 1 || e0[0].Weight != 1 {
+		t.Errorf("expected edge from 0 -- 1, got %d -- %.2f", e0[0].From, e0[0].Weight)
+	}
+
+	e1 := g.AdjEdges(1)
+	if len(e1) != 1 {
+		t.Errorf("expected 1 neighbors for node 1, got %d", len(e1))
+	}
+	if e1[0].From != 1 || e1[0].To != 2 || e1[0].Weight != 1 {
+		t.Errorf("expected edge from 1 -- 2, got %d -- %.2f", e1[0].From, e1[0].Weight)
+	}
+
+	e2 := g.AdjEdges(2)
+	if len(e2) != 0 {
+		t.Errorf("expected 0 neighbors for node 2, got %d", len(e2))
 	}
 }
 
@@ -183,5 +228,22 @@ func TestEdge(t *testing.T) {
 	edge := g.Edge(0, 1)
 	if edge.From != 0 || edge.To != 1 || edge.Weight != 3 {
 		t.Errorf("expected edge from 0 ---> 1, got %d ---> %d", edge.From, edge.To)
+	}
+}
+
+func TestFromZeroAdjMat(t *testing.T) {
+	adjMat := []float64{
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+	}
+	g, err := FromAdjMat(adjMat)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if g.NumNodes() != 4 {
+		t.Errorf("expected 4 nodes, got %d", g.NumNodes())
 	}
 }
