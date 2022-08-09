@@ -1,6 +1,7 @@
 package gograph
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -48,17 +49,15 @@ func TestDijkstra(t *testing.T) {
 		5: []WeightTuple{},
 	}
 	g := FromAdjList(adjList)
-	d, pre := g.Dijkstra(0)
+	g = g.Dijkstra(0)
 
-	expectedD := []float64{0, 7, 9, 16, 19, 17}
-	expectedPre := []int{0, 0, 1, 1, 2, 3}
-
-	for i := 0; i < len(d); i++ {
-		if d[i] != expectedD[i] {
-			t.Errorf("expected distance %f, got %f", expectedD[i], d[i])
-		}
-		if pre[i] != expectedPre[i] {
-			t.Errorf("expected predecessor %d, got %d", expectedPre[i], pre[i])
-		}
+	expected := AdjList{
+		0: []WeightTuple{{1, 7}},
+		1: []WeightTuple{{2, 9}, {3, 16}},
+		2: []WeightTuple{{4, 19}},
+		3: []WeightTuple{{5, 17}},
+	}
+	if !reflect.DeepEqual(g.AdjacencyList, expected) {
+		t.Errorf("expected %v, got %v", expected, g.AdjacencyList)
 	}
 }

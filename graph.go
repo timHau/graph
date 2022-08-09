@@ -22,7 +22,7 @@ type Graph struct {
 	AdjacencyList AdjList
 }
 
-func New() *Graph {
+func NewGraph() *Graph {
 	return &Graph{make(map[int][]WeightTuple)}
 }
 

@@ -12,8 +12,8 @@ import (
 // Space Complexity: O(V)
 // returns:
 // 1)  a list of shortest distances to all other nodes
-// 2)  a list of predecessors for each node
-func (g *Graph) Dijkstra(start int) ([]float64, []int) {
+// 2)  a Graph containing the shortest paths to all other nodes as edge weights
+func (g *Graph) Dijkstra(start int) *Graph {
 	nodes := g.Nodes()
 	numNodes := len(nodes)
 	// Each entry in the distance array represents the distance from the start node to the node at the index
@@ -22,7 +22,7 @@ func (g *Graph) Dijkstra(start int) ([]float64, []int) {
 
 	// List of predecessors for each node
 	pre := make([]int, numNodes)
-	pre[start] = start
+	pre[start] = -1
 
 	mq := make(MinQueue, 0)
 	mq.Push(&Item{
@@ -64,5 +64,12 @@ func (g *Graph) Dijkstra(start int) ([]float64, []int) {
 		}
 	}
 
-	return distances, pre
+	res := NewGraph()
+	for i, v := range pre {
+		if v != -1 {
+			res.AddWeightedEdge(v, i, distances[i])
+		}
+	}
+
+	return res
 }

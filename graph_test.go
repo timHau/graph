@@ -35,7 +35,7 @@ func TestNewGraphFailSizeAdj(t *testing.T) {
 }
 
 func TestAddNode(t *testing.T) {
-	g := New()
+	g := NewGraph()
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -46,7 +46,7 @@ func TestAddNode(t *testing.T) {
 }
 
 func TestAddEdge(t *testing.T) {
-	g := New()
+	g := NewGraph()
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
@@ -73,7 +73,7 @@ func TestAddEdge(t *testing.T) {
 }
 
 func TestAddWeightedEdge(t *testing.T) {
-	g := New()
+	g := NewGraph()
 	g.AddNode(0)
 	g.AddNode(1)
 	g.AddNode(2)
