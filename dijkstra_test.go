@@ -77,6 +77,6 @@ func TestDijkstraNegative(t *testing.T) {
 	g := FromAdjList(adjList)
 	_, err := g.Dijkstra(0)
 	if err == nil {
-		t.Errorf("Dijkstra should have work with negative weights")
+		t.Errorf("Dijkstra should not work with negative weights")
 	}
 }
