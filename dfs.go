@@ -1,4 +1,4 @@
-package gograph
+package graph
 
 // Depth First Search
 //
@@ -22,8 +22,8 @@ func (g *Graph) DFS(start int, fn func(int)) {
 func (g *Graph) DFSstep(start int, visited []bool, fn func(int)) {
 	visited[start] = true
 	fn(start)
-	for _, edge := range g.Edges() {
-		if edge.From == start && !visited[edge.To] {
+	for _, edge := range g.AdjEdges(start) {
+		if !visited[edge.To] {
 			g.DFSstep(edge.To, visited, fn)
 		}
 	}

@@ -1,4 +1,4 @@
-package gograph
+package graph
 
 import (
 	"reflect"
@@ -34,6 +34,31 @@ func TestNewGraphFailSizeAdj(t *testing.T) {
 	}
 }
 
+func TestFromEdgeList(t *testing.T) {
+	edgeList := []Edge{
+		{0, 1, 1},
+		{1, 2, 1},
+		{2, 0, 1},
+	}
+	g := FromEdgeList(edgeList)
+	if g.NumNodes() != 3 {
+		t.Errorf("expected 3 nodes, got %d", g.NumNodes())
+	}
+
+	edge := g.Edge(0, 1)
+	if !edge.Equals(&edgeList[0]) {
+		t.Errorf("expected edge from 0 -- 1, got %d -- %.2f", g.Edge(0, 1).From, g.Edge(0, 1).Weight)
+	}
+	edge = g.Edge(1, 2)
+	if !edge.Equals(&edgeList[1]) {
+		t.Errorf("expected edge from 0 -- 1, got %d -- %.2f", g.Edge(0, 1).From, g.Edge(0, 1).Weight)
+	}
+	edge = g.Edge(2, 0)
+	if !edge.Equals(&edgeList[2]) {
+		t.Errorf("expected edge from 0 -- 1, got %d -- %.2f", g.Edge(0, 1).From, g.Edge(0, 1).Weight)
+	}
+}
+
 func TestAddNode(t *testing.T) {
 	g := NewGraph()
 	g.AddNode(0)
@@ -47,12 +72,9 @@ func TestAddNode(t *testing.T) {
 
 func TestAddEdge(t *testing.T) {
 	g := NewGraph()
-	g.AddNode(0)
-	g.AddNode(1)
-	g.AddNode(2)
-	g.AddEdge(0, 1)
-	g.AddEdge(1, 2)
-	g.AddEdge(2, 0)
+	g.AddEdge(0, 1, 1)
+	g.AddEdge(1, 2, 1)
+	g.AddEdge(2, 0, 1)
 
 	if g.NumEdges() != 3 {
 		t.Errorf("expected 3 edges, got %d", g.NumEdges())
@@ -72,14 +94,11 @@ func TestAddEdge(t *testing.T) {
 	}
 }
 
-func TestAddWeightedEdge(t *testing.T) {
+func TestAddEdge2(t *testing.T) {
 	g := NewGraph()
-	g.AddNode(0)
-	g.AddNode(1)
-	g.AddNode(2)
-	g.AddWeightedEdge(0, 1, 2.1)
-	g.AddWeightedEdge(1, 2, 1.8)
-	g.AddWeightedEdge(2, 0, 9.1)
+	g.AddEdge(0, 1, 2.1)
+	g.AddEdge(1, 2, 1.8)
+	g.AddEdge(2, 0, 9.1)
 
 	if g.NumEdges() != 3 {
 		t.Errorf("expected 3 edges, got %d", g.NumEdges())

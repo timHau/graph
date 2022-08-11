@@ -1,7 +1,6 @@
-package gograph
+package graph
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -49,19 +48,21 @@ func TestDijkstra(t *testing.T) {
 		5: []WeightTuple{},
 	}
 	g := FromAdjList(adjList)
-	g, err := g.Dijkstra(0)
+	dist, pre, err := g.Dijkstra(0)
 	if err != nil {
 		t.Error(err)
 	}
 
-	expected := AdjList{
-		0: []WeightTuple{{1, 7}},
-		1: []WeightTuple{{2, 9}, {3, 16}},
-		2: []WeightTuple{{4, 19}},
-		3: []WeightTuple{{5, 17}},
-	}
-	if !reflect.DeepEqual(g.AdjacencyList, expected) {
-		t.Errorf("expected %v, got %v", expected, g.AdjacencyList)
+	expectDist := []float64{0, 7, 9, 16, 19, 17}
+	expectPre := []int{-1, 0, 1, 1, 2, 3}
+
+	for i := 0; i < len(dist); i++ {
+		if dist[i] != expectDist[i] {
+			t.Errorf("expected: %v, got: %v", expectDist, dist)
+		}
+		if pre[i] != expectPre[i] {
+			t.Errorf("expected: %v, got: %v", expectPre, pre)
+		}
 	}
 }
 
@@ -75,7 +76,7 @@ func TestDijkstraNegative(t *testing.T) {
 		5: []WeightTuple{},
 	}
 	g := FromAdjList(adjList)
-	_, err := g.Dijkstra(0)
+	_, _, err := g.Dijkstra(0)
 	if err == nil {
 		t.Errorf("Dijkstra should not work with negative weights")
 	}

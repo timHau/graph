@@ -1,4 +1,4 @@
-package gograph
+package graph
 
 import (
 	"container/heap"
@@ -13,10 +13,10 @@ import (
 // Space Complexity: O(V)
 // returns:
 // 1)  a list of shortest distances to all other nodes
-// 2)  a Graph containing the shortest paths to all other nodes as edge weights
-func (g *Graph) Dijkstra(start int) (*Graph, error) {
+// 2)  a list of predecessors for each node
+func (g *Graph) Dijkstra(start int) ([]float64, []int, error) {
 	if g.HasNegativeEdges() {
-		return nil, errors.New("Dijkstras Algorithm does not support negative edge weights")
+		return nil, nil, errors.New("dijkstras Algorithm does not support negative edge weights")
 	}
 
 	nodes := g.Nodes()
@@ -69,12 +69,5 @@ func (g *Graph) Dijkstra(start int) (*Graph, error) {
 		}
 	}
 
-	res := NewGraph()
-	for i, v := range pre {
-		if v != -1 {
-			res.AddWeightedEdge(v, i, distances[i])
-		}
-	}
-
-	return res, nil
+	return distances, pre, nil
 }

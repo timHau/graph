@@ -1,32 +1,31 @@
-package gograph
+package graph
 
 import (
-	"fmt"
+	"errors"
 	"math"
 )
 
-func (g *Graph) BellmannFord(start int) {
+func (g *Graph) BellmanFord(start int) ([]float64, error) {
 	numNodes := g.NumNodes()
 	dist := make([]float64, numNodes)
-	parent := make([]int, numNodes)
 	for i := 1; i < g.NumNodes(); i++ {
 		dist[i] = math.Inf(1)
 	}
 	dist[start] = 0
-	parent[start] = -1
+
 	for i := 0; i < g.NumNodes()-1; i++ {
-		for _, e := range g.AdjEdges(start) {
-			if dist[e.To] > dist[start]+e.Weight {
-				dist[e.To] = dist[start] + e.Weight
-				parent[e.To] = start
+		for _, e := range g.Edges() {
+			if dist[e.From] != math.Inf(1) && dist[e.To] > dist[e.From]+e.Weight {
+				dist[e.To] = dist[e.From] + e.Weight
 			}
 		}
 	}
-	for _, e := range g.AdjEdges(start) {
-		if dist[e.To] > dist[start]+e.Weight {
-			panic("negative cycle")
+
+	for _, e := range g.Edges() {
+		if dist[e.From] != math.Inf(1) && dist[e.To] > dist[e.From]+e.Weight {
+			return nil, errors.New("Graph contains negative cycle")
 		}
 	}
 
-	fmt.Println("dist:", dist, "parent:", parent)
+	return dist, nil
 }

@@ -1,4 +1,4 @@
-package gograph
+package graph
 
 import (
 	"math"
@@ -44,7 +44,7 @@ func (g *Graph) Prim() *Graph {
 	for i := 1; i < g.NumNodes(); i++ {
 		res.AddNode(i)
 		if parent[i] != -1 {
-			res.AddWeightedEdge(parent[i], i, mstKeys[i])
+			res.AddEdge(parent[i], i, mstKeys[i])
 		}
 	}
 

@@ -1,4 +1,4 @@
-package gograph
+package graph
 
 func (g *Graph) HasCycle() bool {
 	numNodes := g.NumNodes()
