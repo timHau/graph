@@ -61,12 +61,17 @@ g3 := graph.FromAdjList(graph.AdjList{
 })
 ```
 
+## Installing 
+```sh
+go get github.com/timHau/graph@v0.1.0
+```
+
 ## Example usage
-```go
+```sh
 go run example/main.go
 ```
 
 ## Testing 
-```go
+```sh
 go test -v .
 ```
