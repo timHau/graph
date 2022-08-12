@@ -31,9 +31,9 @@ func (g *Graph) Dijkstra(start int) ([]float64, []int, error) {
 
 	mq := make(MinQueue, 0)
 	mq.Push(&Item{
-		prio:  distances[start],
-		node:  start,
-		index: start,
+		Prio:  distances[start],
+		Node:  start,
+		Index: start,
 	})
 
 	// initialize the lists and the priority queue
@@ -42,9 +42,9 @@ func (g *Graph) Dijkstra(start int) ([]float64, []int, error) {
 			distances[i] = math.MaxFloat64
 			pre[i] = -1
 			mq.Push(&Item{
-				prio:  distances[i],
-				node:  i,
-				index: i,
+				Prio:  distances[i],
+				Node:  i,
+				Index: i,
 			})
 		}
 	}
@@ -54,7 +54,7 @@ func (g *Graph) Dijkstra(start int) ([]float64, []int, error) {
 	for mq.Len() > 0 {
 		// get the node with the smallest distance
 		item := heap.Pop(&mq).(*Item)
-		u := item.node
+		u := item.Node
 		for _, e := range g.AdjEdges(u) {
 			v := e.To
 			vItem := mq.FindNode(v)
@@ -62,7 +62,7 @@ func (g *Graph) Dijkstra(start int) ([]float64, []int, error) {
 				alt := distances[u] + e.Weight
 				if alt < distances[v] && distances[u] != math.MaxFloat64 {
 					distances[v] = alt
-					pre[v] = item.node
+					pre[v] = item.Node
 					mq.UpdatePrio(vItem, alt)
 				}
 			}

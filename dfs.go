@@ -1,8 +1,8 @@
 package graph
 
-// Depth First Search
+// # Depth First Search
 //
-// # Traverse the graph while following the edges in a depth-first manner
+//	Traverse the graph while following the edges in a depth-first manner
 //
 // Time Complexity: O(V + E)
 // Space Complexity: O(V)

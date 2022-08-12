@@ -32,8 +32,8 @@ func (g *Graph) BFSstep(start int, visited []bool, fn func(int)) {
 	for len(queue) > 0 {
 		curr := queue[0]
 		queue = queue[1:]
-		for _, edge := range g.Edges() {
-			if edge.From == curr && !visited[edge.To] {
+		for _, edge := range g.AdjEdges(curr) {
+			if !visited[edge.To] {
 				queue = append(queue, edge.To)
 				visited[edge.To] = true
 				fn(edge.To)

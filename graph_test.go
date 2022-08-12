@@ -300,3 +300,44 @@ func TestHasNegativeEdges(t *testing.T) {
 		t.Errorf("expected negative edges, got %v", g.HasNegativeEdges())
 	}
 }
+
+func TestUpdateEdge(t *testing.T) {
+	adjMat := []float64{
+		0, 1, 1, -1,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+	}
+	g, err := FromAdjMat(adjMat)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	g.UpdateEdge(0, 1, 2)
+	if g.Edge(0, 1).Weight != 2 {
+		t.Errorf("expected edge from 0 ---> 1 to have weight 2, got %.2f", g.Edge(0, 1).Weight)
+	}
+}
+
+func TestGraphClone(t *testing.T) {
+	adjMat := []float64{
+		0, 1, 1, -1,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+		1, 0, 0, 0,
+	}
+	g, err := FromAdjMat(adjMat)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	g2 := g.Clone()
+	if !reflect.DeepEqual(g, g2) {
+		t.Errorf("expected g and g2 to be equal, got %v and %v", g, g2)
+	}
+
+	g.UpdateEdge(0, 1, 2)
+	if reflect.DeepEqual(g, g2) {
+		t.Errorf("expected g and g2 to be different, got %v and %v", g.Edge(0, 1), g2.Edge(0, 1))
+	}
+}

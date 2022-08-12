@@ -15,6 +15,8 @@ A simple graph library for Go.
 - Prim Algorithm (MST)
 - Floyd-Warshall Algorithm
 - Kosaraju Algorithm
+- Laplacian Matrix 
+- Hamiltonian Path Detection (Via DP)
 
 ## Create a graph
 

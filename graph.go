@@ -107,6 +107,24 @@ func (g *Graph) Edges() []Edge {
 	return edges
 }
 
+func (g *Graph) UpdateEdge(from, to int, weight float64) {
+	for i, e := range g.AdjacencyList[from] {
+		if e.To == to {
+			g.AdjacencyList[from][i].Weight = weight
+			return
+		}
+	}
+}
+
+func (g *Graph) Clone() *Graph {
+	adjList := make(map[int][]WeightTuple, len(g.AdjacencyList))
+	for k, v := range g.AdjacencyList {
+		adjList[k] = make([]WeightTuple, len(v))
+		copy(adjList[k], v)
+	}
+	return &Graph{adjList}
+}
+
 func (g *Graph) Nodes() []int {
 	nodes := []int{}
 	for node := range g.AdjacencyList {
@@ -141,4 +159,17 @@ func (g *Graph) HasNegativeEdges() bool {
 		}
 	}
 	return false
+}
+
+func (g *Graph) AsAdjMat() []float64 {
+	n := g.NumNodes()
+	adjMat := make([]float64, n*n)
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			if g.Edge(i, j) != nil {
+				adjMat[i*n+j] = g.Edge(i, j).Weight
+			}
+		}
+	}
+	return adjMat
 }
