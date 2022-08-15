@@ -65,7 +65,7 @@ g3 := graph.FromAdjList(graph.AdjList{
 
 ## Installing 
 ```sh
-go get github.com/timHau/graph@v0.1.0
+go get github.com/timHau/graph@v0.1.2
 ```
 
 ## Example usage
